@@ -232,7 +232,7 @@ In the end, I still mounted the WiFi antennas, in case I need this type of conne
 to mount the 4 Lattepanda with the support screws of the Rapsberry cluster from the previous project, so I glued
 Wifi antennas on SSDs, it's not very clean as an installation, but it does the trick.
 
-![Cluster](images/cluster.jpg)
+![Cluster](images/cluster.jpeg)
 
 ## Software
 ### Lattepanda software installation
@@ -260,7 +260,7 @@ in ssh à la carte.
 
 After mounting the cluster, connecting them to the network switch and to the portable router, we get that.
 
-![Cluster](images/cluster2.jpg)
+![Cluster](images/cluster2.jpeg)
 
 ### Router settings
 So that the OS installation software can access the internet and also so that you can access your
@@ -271,7 +271,7 @@ For this we will use the dlink Router and configure it to have the operating mod
 Fashion. The documentation of these small pieces of equipment is well done, you shouldn't have too many problems. And like
 everything related to networks can sometimes seem confusing, I will try to show you what to do.
 
-![Cluster](images/cluster4.jpg)
+![Cluster](images/cluster4.jpeg)
 
 ### Router Operation
 The mode of action of the router that we are going to choose is this. This allows you to connect your computer by RJ45
@@ -279,7 +279,7 @@ to the network loop in which your cluster is located and this allows you to acce
 home wifi network. This allows you to make the necessary updates to your Cloud and it allows you to take
 your Cloud with you for demonstrations.
 
-![Routeur](images/routeur1.jpg)
+![Routeur](images/routeur1.jpeg)
 
 ### Installing the OS on the cards
 You must then connect a screen, a keyboard, a mouse and the installation usb key, in turn on
@@ -296,7 +296,9 @@ each card.
 
 The address is like this: https: //XXX.XXX.X.XX: 9090
 
-![fedora interface](images/fedora1.jpg)
+![fedora interface](images/fedora1.png)
+
+## Cluster creation
 
 ### Clone this repo
 
