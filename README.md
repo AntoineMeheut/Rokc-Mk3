@@ -294,7 +294,7 @@ and therefore: we put the screen away, the calvier and the smile!
 You must then locate the IP address of each of your cards and connect to the Fedora server interface of
 each card.
 
-The address is like this: https: //XXX.XXX.X.XX: 9090
+The address is like this: https://XXX.XXX.X.XX:9090
 
 ![fedora interface](images/fedora1.png)
 
