@@ -247,7 +247,7 @@ The version I used is a server ISO: Fedora-Server-dvd-x86_64-32-1.6.iso
 With this version you will therefore not have a desktop on your OS, but do not panic, we will see below, how
 use the web console of each server, to avoid a lot of command line.
 
-### Comment installer les OS
+### How to install the OS
 The first thing to do is download the iso and burn it on a usb key. For that I use a standard 16 Gb usb key
 and this software [etcher](https://www.balena.io/etcher/)
 
