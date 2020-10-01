@@ -375,205 +375,63 @@ node2.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.k
 node3.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.hal9000.com,node-role.kubernetes.io/compute=true
 ```
 
-## Configure the registry
-We will start by cleaning up the default configuration.
-
+### See the state of your pods
 ```
 oc get pods
 ```
 You have to get something like this.
 
 ```
-NAME                        READY     STATUS    RESTARTS   AGE
-docker-registry-1-5ngph     1/1       Running   0          18m
-registry-console-1-deploy   0/1       Error     0          18m
-router-1-8dmf5              1/1       Running   0          19m
+NAME                       READY     STATUS    RESTARTS   AGE
+docker-registry-1-b528c    1/1       Running   0          43m
+registry-console-1-frrb9   1/1       Running   0          43m
+router-1-wz4bg             1/1       Running   0          43m
 ```
 
 ```
-oc describe pod docker-registry-1-5ngph  | grep -A3 'Volumes:'
+oc describe pod registry-console-1-frrb9
 ```
 You have to get something like this.
 
 ```
-Volumes:
-  registry-storage:
-    Type:    EmptyDir (a temporary directory that shares a pod's lifetime)
-    Medium:
-```
-
-### Delete related settings
-```
-oc delete all -l docker-registry=default
-```
-You have to get something like this.
-
-```
-pod "docker-registry-1-5ngph" deleted
-replicationcontroller "docker-registry-1" deleted
-service "docker-registry" deleted
-deploymentconfig.apps.openshift.io "docker-registry" deleted
-```
-
-```
-oc delete all -l name=registry-console
-```
-You have to get something like this.
-
-```
-replicationcontroller "registry-console-1" deleted
-service "registry-console" deleted
-deploymentconfig.apps.openshift.io "registry-console" deleted
-```
-
-```
-oc delete serviceaccount registry
-```
-You have to get something like this.
-
-```
-serviceaccount "registry" deleted
-```
-
-```
-oc delete oauthclients cockpit-oauth-client
-```
-You have to get something like this.
-
-```
-oauthclient.oauth.openshift.io "cockpit-oauth-client" deleted
-```
-
-### Delete if it exists
-```
-oc delete clusterrolebindings registry-registry-role
-```
-
-```
-oc get pods
-```
-You have to get something like this.
-
-```
-NAME             READY     STATUS    RESTARTS   AGE
-router-1-8dmf5   1/1       Running   0          22m
-```
-
-## Configure registry
-For example, create a directory for container images on [node1.hal9000.com]. Node which is in [compute] role and set a registry pod which always runs on this node.
-
-```
-oc get nodes
-```
-You have to get something like this.
-
-```
-NAME                 STATUS    ROLES          AGE       VERSION
-master.hal9000.com   Ready     infra,master   27m       v1.11.0+d4cacc0
-node1.hal9000.com    Ready     compute        24m       v1.11.0+d4cacc0
-node2.hal9000.com    Ready     compute        24m       v1.11.0+d4cacc0
-node3.hal9000.com    Ready     compute        24m       v1.11.0+d4cacc0
-```
-
-### Create a directory for images
-```
-ssh node1 "sudo mkdir /var/lib/origin/registry"
-```
-
-```
-ssh node1 "sudo chown origin. /var/lib/origin/registry"
-```
-
-### Set privilege to the [registry] account
-```
-oc adm policy add-scc-to-user privileged system:serviceaccount:default:registry
-```
-You have to get something like this.
-
-```
-scc "privileged" added to: ["system:serviceaccount:default:registry"]
-```
-
-### Deploy registry
-```
-oc adm registry \
---config=/etc/origin/master/admin.kubeconfig \
---service-account=registry \
---mount-host=/var/lib/origin/registry \
---selector='kubernetes.io/hostname=node1.hal9000.com' \
---replicas=1
-```
-You have to get something like this.
-
-```
---> Creating registry registry ...
-    serviceaccount "registry" created
-    clusterrolebinding.authorization.openshift.io "registry-registry-role" created
-    deploymentconfig.apps.openshift.io "docker-registry" created
-    service "docker-registry" created
---> Success
-```
-
-Few minutes later (wait a good 5 minutes), deploy has finished and pod becomes running state.
-
-```
-oc get pods
-```
-You have to get something like this.
-
-```
-NAME                       READY     STATUS              RESTARTS   AGE
-docker-registry-1-deploy   1/1       Running             0          4m
-docker-registry-1-h55c7    0/1       ContainerCreating   0          27s
-router-1-8dmf5             1/1       Running             0          29m
-```
-
-```
-oc describe pod docker-registry-1-h55c7
-```
-You have to get something like this.
-
-```
-Name:               docker-registry-1-h55c7
+Name:               registry-console-1-frrb9
 Namespace:          default
 Priority:           0
 PriorityClassName:  <none>
-Node:               node1.hal9000.com/192.168.1.17
-Start Time:         Sun, 27 Sep 2020 07:40:05 -0400
-Labels:             deployment=docker-registry-1
-                    deploymentconfig=docker-registry
-                    docker-registry=default
+Node:               master.hal9000.com/192.168.1.16
+Start Time:         Thu, 01 Oct 2020 16:42:36 -0400
+Labels:             deployment=registry-console-1
+                    deploymentconfig=registry-console
+                    name=registry-console
 Annotations:        openshift.io/deployment-config.latest-version=1
-                    openshift.io/deployment-config.name=docker-registry
-                    openshift.io/deployment.name=docker-registry-1
-                    openshift.io/scc=privileged
+                    openshift.io/deployment-config.name=registry-console
+                    openshift.io/deployment.name=registry-console-1
+                    openshift.io/scc=restricted
 Status:             Running
-IP:                 10.130.0.59
-Controlled By:      ReplicationController/docker-registry-1
+IP:                 10.128.0.6
+Controlled By:      ReplicationController/registry-console-1
 Containers:
-  registry:
-    Container ID:   docker://49f8d5462fff745bb6eb275bed435950231941401bc7d70d651984c12c7bd15e
-    Image:          openshift/origin-docker-registry:v3.11.0
-    Image ID:       docker-pullable://docker.io/openshift/origin-docker-registry@sha256:5c2fe22619668face238d1ba8602a95b3102b81e667b54ba2888f1f0ee261ffd
-    Port:           5000/TCP
+  registry-console:
+    Container ID:   docker://5e6ff90a80d38a3a36981631e1e86025e329f9b7145c4c4ec469afbc05736a6f
+    Image:          docker.io/timbordemann/cockpit-kubernetes:latest
+    Image ID:       docker-pullable://docker.io/timbordemann/cockpit-kubernetes@sha256:f38c7b0d2b85989f058bf78c1759bec5b5d633f26651ea74753eac98f9e70c9b
+    Port:           9090/TCP
     Host Port:      0/TCP
     State:          Running
-      Started:      Sun, 27 Sep 2020 07:40:52 -0400
+      Started:      Thu, 01 Oct 2020 16:43:56 -0400
     Ready:          True
     Restart Count:  0
-    Requests:
-      cpu:      100m
-      memory:   256Mi
-    Liveness:   http-get http://:5000/healthz delay=10s timeout=5s period=10s #success=1 #failure=3
-    Readiness:  http-get http://:5000/healthz delay=0s timeout=5s period=10s #success=1 #failure=3
+    Liveness:       http-get http://:9090/ping delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:      http-get http://:9090/ping delay=0s timeout=5s period=10s #success=1 #failure=3
     Environment:
-      REGISTRY_HTTP_ADDR:                                     :5000
-      REGISTRY_HTTP_NET:                                      tcp
-      REGISTRY_HTTP_SECRET:                                   Vrzay5ziziDdGqVYtu6bYO66mZJz3o15jc36fsMGitw=
-      REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIFT_ENFORCEQUOTA:  false
+      OPENSHIFT_OAUTH_PROVIDER_URL:  https://master.hal9000.com:8443
+      OPENSHIFT_OAUTH_CLIENT_ID:     cockpit-oauth-client
+      KUBERNETES_INSECURE:           false
+      COCKPIT_KUBE_INSECURE:         false
+      REGISTRY_ONLY:                 true
+      REGISTRY_HOST:                 docker-registry-default.apps.hal9000.com
     Mounts:
-      /registry from registry-storage (rw)
-      /var/run/secrets/kubernetes.io/serviceaccount from registry-token-4n4cz (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-mcsbs (ro)
 Conditions:
   Type              Status
   Initialized       True 
@@ -581,28 +439,31 @@ Conditions:
   ContainersReady   True 
   PodScheduled      True 
 Volumes:
-  registry-storage:
-    Type:          HostPath (bare host directory volume)
-    Path:          /var/lib/origin/registry
-    HostPathType:  
-  registry-token-4n4cz:
+  default-token-mcsbs:
     Type:        Secret (a volume populated by a Secret)
-    SecretName:  registry-token-4n4cz
+    SecretName:  default-token-mcsbs
     Optional:    false
-QoS Class:       Burstable
-Node-Selectors:  kubernetes.io/hostname=node1.hal9000.com
-Tolerations:     node.kubernetes.io/memory-pressure:NoSchedule
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/master=true
+Tolerations:     <none>
 Events:
-  Type    Reason     Age   From                        Message
-  ----    ------     ----  ----                        -------
-  Normal  Scheduled  2m    default-scheduler           Successfully assigned default/docker-registry-1-h55c7 to node1.hal9000.com
-  Normal  Pulling    2m    kubelet, node1.hal9000.com  pulling image "openshift/origin-docker-registry:v3.11.0"
-  Normal  Pulled     1m    kubelet, node1.hal9000.com  Successfully pulled image "openshift/origin-docker-registry:v3.11.0"
-  Normal  Created    1m    kubelet, node1.hal9000.com  Created container
-  Normal  Started    1m    kubelet, node1.hal9000.com  Started container
+  Type    Reason     Age   From                         Message
+  ----    ------     ----  ----                         -------
+  Normal  Scheduled  44m   default-scheduler            Successfully assigned default/registry-console-1-frrb9 to master.hal9000.com
+  Normal  Pulling    44m   kubelet, master.hal9000.com  pulling image "docker.io/timbordemann/cockpit-kubernetes:latest"
+  Normal  Pulled     42m   kubelet, master.hal9000.com  Successfully pulled image "docker.io/timbordemann/cockpit-kubernetes:latest"
+  Normal  Created    42m   kubelet, master.hal9000.com  Created container
+  Normal  Started    42m   kubelet, master.hal9000.com  Started container
 ```
 
-### Create User Accounts
+The adresse of your OKD console is here : OPENSHIFT_OAUTH_PROVIDER_URL:  https://master.hal9000.com:8443
+
+Because it's not possible to access to this address with the IP, you should open the hosts file of the computer you want to use to access to the OKD console and add the master DNS ident to the file.
+```
+192.168.1.16   master.hal9000.com  master
+```
+
+### Create User Accounts for OKD console
 You can use the httpd-tools package to obtain the htpasswd binary that can generate these accounts.
 
 ```
@@ -630,11 +491,11 @@ Give this user account cluster-admin privileges, which allows it to do everythin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 ```
 
-When running oc adm commands, you should run them only from the first master listed in the Ansible host inventory file, by default /etc/ansible/hosts.
+## Access the the OKD console
 
-You can use this username/password combination to log in via the web console or the command line. To test this, run the following command.
+[https://master.hal9000.com:8443](https://master.hal9000.com:8443)
 
-### 	Deploy a test application to be able to use registry normally
+## 	Deploy a test application
 ```
 oc login -u admin
 oc new-project test-project
@@ -706,7 +567,3 @@ Events:            <none>
 ```
 curl 172.30.6.251:8080
 ```
-
-### 	Enable registry console to use web based UI
-oc get routes
-
