@@ -126,7 +126,7 @@ NAME=enp2s0
 DEVICE=enp2s0
 ONBOOT=yes
 PROXY_METHOD=none
-IPADDR=192.168.1.16
+IPADDR=192.168.1.19
 PREFIX=24
 NETMASK=255.255.255.0
 GATEWAY=192.168.1.254
@@ -160,6 +160,13 @@ For Ansible, version 2.6, 2.7, 2.8, 2.9 are provided from CentOS Repository, but
 yum -y install centos-release-openshift-origin311 centos-release-ansible-27
 yum -y install ansible openshift-ansible docker git pyOpenSSL
 systemctl enable --now docker
+```
+
+#### Add docker to firewall
+```
+firewall-cmd --permanent --zone=trusted --change-interface=docker0
+firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
+firewall-cmd --reload
 ```
 
 #### Now you can reboot your node
@@ -339,7 +346,7 @@ Service Catalog Install      : Complete (0:04:50)
 
 If after the execution you do not have an error message and you get a complete on all the steps, bravo! Openshift Origin is installed.
 
-## Two commands use to verify its operation
+## Useful commands to verify that it works
 ### See the state of your nodes
 ```
 oc get nodes
