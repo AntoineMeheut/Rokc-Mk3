@@ -1,14 +1,14 @@
-# Install your personal PaaS
+## Install your personal PaaS
 This tutorial is designed to share with you my experience of installing PaaS on equipment that you can have at home, without transforming your living room into a server room.
 
 This tutorial is independent and is part of a project that will assemble several of the tutorials that you will find on my GitHub, to create a portable PaaS Cloud, which allows me to do demonstrations and thus try to demistify what the Cloud is.
 
-# Deploying OpenShift Origin 3.11 on bare metal cluster
-## Inspiration
+## Deploying OpenShift Origin 3.11 on bare metal cluster
+### Inspiration
 * [https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=1](https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=1)
 * [https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=6](https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=6)
 
-## Diagram of infrastructure
+### Diagram of infrastructure
 ```
 --+------------------+------------------+------------------+-------------
   |192.168.1.16      |192.168.1.17      |192.168.1.18      |192.168.1.19
@@ -20,7 +20,7 @@ This tutorial is independent and is part of a project that will assemble several
 +--------------+   +--------------+   +--------------+   +--------------+
 ```
 
-## Infrastructure Setup
+### Infrastructure Setup
 | Hostname | IP Address | CPU | Thread | RAM HDD | eMMC | NVMe SSD | OS | Role |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | master Node |
@@ -28,42 +28,42 @@ This tutorial is independent and is part of a project that will assemble several
 | node2.openshift.hal9000.com | 192.168.1.18 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 2 |
 | node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 3 |
 
-## Preparing all Nodes
-### Download and flash Centos-7 on a USB key
+### Preparing all Nodes
+#### Download and flash Centos-7 on a USB key
 Download Centos 7 [CentOS-7-x86_64-Minimal-2003.iso](http://isoredirect.centos.org/centos/7/isos/x86_64/)
 
 Flash a USB key, plug your LattePanda and add : keyboard, mouse, screen and a SD card on the LattePanda.
 
-### Why a SD card ?
+#### Why a SD card ?
 There is a small bug in the LattePanda bios which for the moment and to my knowledge has not yet been fixed. Once you have installed Centos on the card, it will permanently display a message indicating that Centos cannot restart the hardware slot of the SD card. The way to get rid of this message is to insert an SD card into the slot.
 
-### Install Centos on LattePanda
+#### Install Centos on LattePanda
 Connect everything and start your LattePanda by pressing F7, this allows you to have the menu of choice of the support on which you want to start.
 
 Choose the USB key and start the installation.
 
 Warning: your nodes must be connected to the network switch and to the router, otherwise the configuration of the Ethernet protocol will not be carried out by the Centos installation program and this is not necessarily something that you want to do by hand after installation, we already have a lot to do.
 
-### Installing Cockpit Admin Tool on CentOS 7
+#### Installing Cockpit Admin Tool on CentOS 7
 Cockpit is very practical when you have to access a lot of servers and especially not to rack your brains to operate a Mackbook keyboard on a Centos server. Cockpit handles this for you and allows you to copy / paste your orders.
 
 Of course you have to think about deactivating it, for security, once you have finished, but here we are doing a test and there are no plans to open this PaaS to the outside. It would then be necessary to address all the notions of security on the servers and the PaaS itself.
 
 So this experiment is planned to make demonstrations on a network not connected to the Internet, which in fact secures the installation and avoids carrying out all the security part of the installation.
 
-#### Install Cockpit
+##### Install Cockpit
 ```
 yum install -y cockpit
 ```
-#### Install additional Cockpit packages
+##### Install additional Cockpit packages
 ```
 yum install -y cockpit-networkmanager cockpit-dashboard cockpit-storaged cockpit-packagekit
 ```
-#### Enable Cockpit
+##### Enable Cockpit
 ```
 systemctl enable --now cockpit.socket
 ```
-#### Add cockpit to firewall
+##### Add cockpit to firewall
 ```
 firewall-cmd --permanent --add-service=cockpit
 firewall-cmd --reload
@@ -77,8 +77,8 @@ ip addr
 
 From now on you can use this IP address to connect with the cockpit or continue with your current installation in terminal mode directly on the map.
 
-### Network setup
-#### Set the hostname for each corresponding node
+#### Network setup
+##### Set the hostname for each corresponding node
 Master
 
 ```
@@ -99,7 +99,7 @@ Node3
 ```
 hostnamectl set-hostname node3.hal9000.com
 ```
-#### Configure static ip
+##### Configure static ip
 ```
 vi /etc/sysconfig/network-scripts/ifcfg-enp2s0
 ```
@@ -134,7 +134,7 @@ DNS1=8.8.8.8
 UUID=<quit the line in your file>
 ```
 
-#### Configure names resolution
+##### Configure names resolution
 Configure /etc/hosts file for name resolution as following.
 
 ```
@@ -150,8 +150,8 @@ vi /etc/hosts
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 ```
 
-### Openshift Origin 3.11 installation
-#### Installation de OKD 3.11 et de Ansible
+#### Openshift Origin 3.11 installation
+##### Installation de OKD 3.11 et de Ansible
 On all Nodes, install OpenShift Origin 3.11 repository, Ansible and Docker.
 
 For Ansible, version 2.6, 2.7, 2.8, 2.9 are provided from CentOS Repository, but Openshift-Ansible is not supported on 2.8 or later, so install Ansible 2.7
@@ -162,19 +162,19 @@ yum -y install ansible openshift-ansible docker git pyOpenSSL
 systemctl enable --now docker
 ```
 
-#### Add docker to firewall
+##### Add docker to firewall
 ```
 firewall-cmd --permanent --zone=trusted --change-interface=docker0
 firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
 firewall-cmd --reload
 ```
 
-#### Now you can reboot your node
+##### Now you can reboot your node
 ```
 reboot
 ```
 
-#### If you want to stop a node
+##### If you want to stop a node
 LattePanda cards are powerful and heat up, no more than normal, but being able to press the tiny switch that will send the stop signal to the card, without feeling the heat of the card on your fingers is not easy.
 
 Just use this command and it will be easier.
@@ -185,7 +185,7 @@ poweroff
 
 **Once here, repeat the section preparing all nodes for node1, node2 and node3.**
 
-## Connect to your nodes cockpit interfaces
+### Connect to your nodes cockpit interfaces
 You should connect on root on all ur nodes for the main part of this tutoriel.
 
 * master [https://192.168.1.16:9090](https://192.168.1.16:9090)
@@ -193,16 +193,16 @@ You should connect on root on all ur nodes for the main part of this tutoriel.
 * node2 [https://192.168.1.18:9090](https://192.168.1.18:9090)
 * node3 [https://192.168.1.19:9090](https://192.168.1.19:9090)
 
-## Deploying and starting Openshift Origin 3.11 from master node
-### Preparation on master only
+### Deploying and starting Openshift Origin 3.11 from master node
+#### Preparation on master only
 This declaration of targets for the sharing of the RSA key and the sending of keys which follow simply make it possible not to have to enter the login and password of each node in Ansible executes the installation scripts of Openshift Origin.
 
-#### Creating an RSA key
+##### Creating an RSA key
 ```
 ssh-keygen -q -N ""
 ```
 
-#### Declare the target nodes for the key
+##### Declare the target nodes for the key
 
 ```
 vi ~/.ssh/config
@@ -223,7 +223,7 @@ Host node3
     User root
 ```
 
-#### Send the public-key to all the nodes
+##### Send the public-key to all the nodes
 ```
 chmod 600 ~/.ssh/config
 ```
@@ -235,7 +235,7 @@ ssh-copy-id node2
 ssh-copy-id node3
 ```
 
-### Preparing the hosts file for Ansible
+#### Preparing the hosts file for Ansible
 ```
 vi /etc/ansible/hosts
 ```
@@ -308,19 +308,21 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 # define default sub-domain for Master node
 openshift_master_default_subdomain=apps.hal9000.com
 
+###########################################################################
 # image for a cluster with a working registry-console in 3.11
+###########################################################################
 openshift_cockpit_deployer_image='docker.io/timbordemann/cockpit-kubernetes:latest'
 
 # allow unencrypted connection within cluster
 openshift_docker_insecure_registries=192.168.1.16/16
 ```
 
-### Run prerequisites playbook
+#### Run prerequisites playbook
 ```
 ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
 ```
 
-### Run deploy cluster playbook
+#### Run deploy cluster playbook
 ```
 ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml
 ```
@@ -346,8 +348,8 @@ Service Catalog Install      : Complete (0:04:50)
 
 If after the execution you do not have an error message and you get a complete on all the steps, bravo! Openshift Origin is installed.
 
-## Useful commands to verify that it works
-### See the state of your nodes
+### Useful commands to verify that it works
+#### See the state of your nodes
 ```
 oc get nodes
 ```
@@ -361,7 +363,7 @@ node2.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
 node3.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
 ```
 
-### View status with labels
+#### View status with labels
 ```
 oc get nodes --show-labels=true
 ```
@@ -375,7 +377,7 @@ node2.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.k
 node3.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.hal9000.com,node-role.kubernetes.io/compute=true
 ```
 
-### See the state of your pods
+#### See the state of your pods
 ```
 oc get pods
 ```
@@ -463,14 +465,14 @@ Because it's not possible to access to this address with the IP, you should open
 192.168.1.16   master.hal9000.com  master
 ```
 
-### Create User Accounts for OKD console
+#### Create User Accounts for OKD console
 You can use the httpd-tools package to obtain the htpasswd binary that can generate these accounts.
 
 ```
 yum -y install httpd-tools
 ```
 
-#### Create a user account
+##### Create a user account
 
 ```
 touch /etc/origin/master/htpasswd
@@ -479,7 +481,7 @@ htpasswd -b /etc/origin/master/htpasswd admin redhat
 
 You have created a user, admin, with the password, redhat.
 
-#### Restart OpenShift before going forward
+##### Restart OpenShift before going forward
 ```
 master-restart api
 master-restart controllers
@@ -491,11 +493,13 @@ Give this user account cluster-admin privileges, which allows it to do everythin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 ```
 
-## Access the the OKD console
+### Access the the OKD console
 
 [https://master.hal9000.com:8443](https://master.hal9000.com:8443)
 
-## 	Deploy a test application
+![OKD Cockpit](images/OKD_console.jpeg)
+
+### 	Deploy a test application
 ```
 oc login -u admin
 oc new-project test-project
