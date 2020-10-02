@@ -1,14 +1,16 @@
-# Deploying OpenShift 3.9 Cluster
+# Deploying OpenShift Origin 3.11 on VM cluster
 ## Infrastructure Setup
-| Hostname | IP Address | CPU | RAM HDD | eMMC | NVMe SSD | OS | Role |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 8Gb | 64Gb | 500Gb | Fedora-32 | master Node |
-| infra.openshift.hal9000.com | 192.168.1.17 | Intel m3 | 8Gb | 64Gb | 500Gb | Fedora-32 | infra Node |
-| node1.openshift.hal9000.com | 192.168.1.30 | Intel m3 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 1 |
-| node2.openshift.hal9000.com | 192.168.1.32 | Intel m3 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 2 |
+| Hostname | IP Address | VM Disk | VM Memory | OS | Role |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| master.openshift.hal9000.com | 192.168.148.130 | 40 Gb | 8Gb | Centos-7 | Master Node |
+| node1.openshift.hal9000.com | 192.168.148.131 | 40 Gb | 8Gb | Centos-7 | Worker Node 1 |
+| node1.openshift.hal9000.com | 192.168.148.132 | 40 Gb | 8Gb | Centos-7 | Worker Node 2 |
+| node3.openshift.hal9000.com | 192.168.148.133 | 40 Gb | 8Gb | Centos-7 | Worker Node 3 |
 
 ### Install Centos-7 on all your server
 [CentOS-7-x86_64-Minimal-2003.iso](http://isoredirect.centos.org/centos/7/isos/x86_64/)
+
+If you need detailed information on this phase, refer to the installation on target bar metal.
 
 ### Installing Cockpit Admin Tool on CentOS 7 for all nodes
 #### Install Cockpit
@@ -32,32 +34,43 @@ firewall-cmd --reload
 You should connect on root on all ur nodes for the main part of this tutoriel, you will have to create a user on the master node to install ansible.
 
 * master [https://192.168.148.130:9090](https://192.168.148.130:9090)
-* infra [https://192.168.148.131:9090](https://192.168.148.131:9090)
-* node1 [https://192.168.148.132:9090](https://192.168.148.132:9090)
-* node2 [https://192.168.148.133:9090](https://192.168.148.133:9090)
+* node1 [https://192.168.148.131:9090](https://192.168.148.131:9090)
+* node2 [https://192.168.148.132:9090](https://192.168.148.132:9090)
+* node3 [https://192.168.148.133:9090](https://192.168.148.133:9090)
 
 ## Preparing Nodes
-### Step 1: Set the hostname for all nodes
+### Set the hostname for each corresponding node
+Master
+
 ```
-hostnamectl set-hostname master.openshift.hal9000.com
+hostnamectl set-hostname master.hal9000.com
 ```
+Node1
+
 ```
-hostnamectl set-hostname infra.openshift.hal9000.com
+hostnamectl set-hostname node1.hal9000.com
 ```
+Node2
+
 ```
-hostnamectl set-hostname node1.openshift.hal9000.com
+hostnamectl set-hostname node2.hal9000.com
 ```
+Node3
+
 ```
-hostnamectl set-hostname node2.openshift.hal9000.com
+hostnamectl set-hostname node3.hal9000.com
 ```
-### Step 2: Configure static ip for all nodes
+
+### Configure static ip
 ```
 vi /etc/sysconfig/network-scripts/ifcfg-ens33
 ```
 
-Change BOOTPROTO from dhcp to static and add the following lignes to the file. Do that for each nodes with IPADDR 130 for master, 131 for infra, 132, for node1 and 133 for node2.
+Change BOOTPROTO from dhcp to static and add the following lignes to the file. Do that for each nodes with IPADDR 130 for master, 131 for node1, 132, for node2 and 133 for node3.
 
 Realy take care of the GATEWAY cause it depend on your virtualization software, for VMware Fusion it's 192.168.148.2
+
+Take care to keep the UUID of the file you are modifying, you can delete all lines except this one.
 
 ```
 TYPE=Ethernet
@@ -83,7 +96,7 @@ DNS1=8.8.8.8
 UUID=c96bc909-188e-ec64-3a96-6a90982b08ad
 ```
 
-### Step 2: Configure names resolution for all node
+### Configure names resolution for all node
 Configure /etc/hosts file for name resolution as following on all nodes.
 
 ```
@@ -93,364 +106,349 @@ vi /etc/hosts
 ```
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 192.168.148.130   master.openshift.hal9000.com  master
-192.168.148.131   infra.openshift.hal9000.com  infra
-192.168.148.132   node1.openshift.hal9000.com  node1
-192.168.148.133   node2.openshift.hal9000.com  node2
+192.168.148.131   node1.openshift.hal9000.com  infra
+192.168.148.132   node2.openshift.hal9000.com  node1
+192.168.148.133   node3.openshift.hal9000.com  node2
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 ```
 
-### Step 3: Install docker on all nodes
-#### Install docker
-##### Install the dnf-plugins-core package (which provides the commands to manage your DNF repositories) and set up the stable repository
-```
-yum install -y yum-utils
-```
+## Openshift Origin 3.11 installation
+### Installation de OKD 3.11 et de Ansible
+On all Nodes, install OpenShift Origin 3.11 repository, Ansible and Docker.
+
+For Ansible, version 2.6, 2.7, 2.8, 2.9 are provided from CentOS Repository, but Openshift-Ansible is not supported on 2.8 or later, so install Ansible 2.7
 
 ```
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
-```
-##### Install the latest version of Docker Engine and containerd, or go to the next step to install a specific version
-```
-yum install docker-ce docker-ce-cli containerd.io
-```
-##### Start Docker
-```
-systemctl start docker
-```
-#### Ennable and status Docker
-```
-systemctl enable docker && systemctl status docker
-```
-### Step 4: Configure ansible repository on master node only
-#### Install needed packages
-```
-yum install -y wget git nano net-tools bind-utils iptables-services bridge-utils \
-bash-completion kexec-tools sos psacct openssl-devel httpd-tools NetworkManager \
-python-cryptography python-devel python-passlib \
-java-1.8.0-openjdk-headless "@Development Tools"
-
-```
-#### Pepare ansible repo
-```
-vi /etc/yum.repos.d/ansible.repo
+yum -y install centos-release-openshift-origin311 centos-release-ansible-27
+yum -y install ansible openshift-ansible docker git pyOpenSSL
+systemctl enable --now docker
 ```
 
+### Add docker to firewall
 ```
-[ansible]
-name = Ansible Repo
-baseurl = https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
-enabled = 1
-gpgcheck =  0
-```
-
-### Step 5: Install ansible package and clone Openshift-Ansible git repo on master machine only
-#### Install ansible
-```
-yum install epel-release
-yum -y install python-pip
-pip install --upgrade setuptools
-pip install ansible==2.6.20
-yum -y install pyOpenSSL
-
-```
-### Step 6: Install openshift-ansible 3.9 scripts
-```
-git clone https://github.com/openshift/openshift-ansible.git
-cd openshift-ansible
-git fetch
-git checkout release-3.9
+firewall-cmd --permanent --zone=trusted --change-interface=docker0
+firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
+firewall-cmd --reload
 ```
 
-### Step 7: Update system and reboot on all nodes
-
+### Now you can reboot your node
 ```
-yum update -y
 reboot
 ```
 
-### Step 7: Generate SSH keys on master node and install it on all nodes
-Disconnect from user account and reconnect witj root account.
+**Once here, repeat the section preparing all nodes for node1, node2 and node3.**
+
+### Connect to your nodes cockpit interfaces
+You should connect on root on all ur nodes for the main part of this tutoriel.
+
+* master [https://192.168.148.130:9090](https://192.168.148.130:9090)
+* node1 [https://192.168.148.131:9090](https://192.168.148.131:9090)
+* node2 [https://192.168.148.132:9090](https://192.168.148.132:9090)
+* node3 [https://192.168.148.133:9090](https://192.168.148.133:9090)
+
+### Deploying and starting Openshift Origin 3.11 from master node
+#### Preparation on master only
+This declaration of targets for the sharing of the RSA key and the sending of keys which follow simply make it possible not to have to enter the login and password of each node in Ansible executes the installation scripts of Openshift Origin.
+
+##### Creating an RSA key
+```
+ssh-keygen -q -N ""
+```
+
+##### Declare the target nodes for the key
 
 ```
-ssh-keygen -f ~/.ssh/id_rsa -N ''
+vi ~/.ssh/config
 ```
 
 ```
-for host in master.openshift.hal9000.com node1.openshift.hal9000.com node2.openshift.hal9000.com infra.openshift.hal9000.com ; do ssh-copy-id -i ~/.ssh/id_rsa.pub $host; done
+Host master
+    Hostname master.hal9000.com
+    User root
+Host node1
+    Hostname node1.hal9000.com
+    User root
+Host node2
+    Hostname node2.hal9000.com
+    User root
+Host node3
+    Hostname node3.hal9000.com
+    User root
 ```
 
-### Step 8: Create your own inventory file for Ansible on master node
+##### Send the public-key to all the nodes
+```
+chmod 600 ~/.ssh/config
+```
 
 ```
-vi ~/inventory.ini
+ssh-copy-id master
+ssh-copy-id node1
+ssh-copy-id node2
+ssh-copy-id node3
+```
+
+#### Preparing the hosts file for Ansible
+```
+vi /etc/ansible/hosts
 ```
 
 ```
-# Create an OSEv3 group that contains the masters, nodes, and etcd groups
+#
+# ansible inventory for OpenShift Origin Platform  3.11
+#
+
+###########################################################################
+#
+# Ansible script that will be used to identify the targets of the deployment
+# and use the variables for Openshift Origin
+#
+###########################################################################
+
+###########################################################################
+# Configuring your inventory file
+# https://docs.openshift.com/container-platform/3.11/install/configuring_inventory_file.html
+# add follows to the end
+###########################################################################
+
+###########################################################################
+### OpenShift Hosts
+###########################################################################
 [OSEv3:children]
-master
+masters
 nodes
 etcd
 
-[master]
-master.openshift.hal9000.com openshift_ip=192.168.148.130
+[masters]
+master.hal9000.com openshift_schedulable=true containerized=false
 
 [etcd]
-master.openshift.hal9000.com openshift_ip=192.168.148.130
+master.hal9000.com
 
 [nodes]
-master.openshift.hal9000.com openshift_ip=192.168.148.130 openshift_schedulable=true
-infra.openshift.hal9000.com openshift_ip=192.168.148.131 openshift_schedulable=true openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-node1.openshift.hal9000.com openshift_ip=192.168.148.132 openshift_schedulable=true openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
-node2.openshift.hal9000.com openshift_ip=192.168.148.133 openshift_schedulable=true openshift_node_labels="{'region': 'primary', 'zone': 'default'}"
+# defined values for [openshift_node_group_name] in the file below
+# [/usr/share/ansible/openshift-ansible/roles/openshift_facts/defaults/main.yml]
+master.hal9000.com openshift_node_group_name='node-config-master-infra'
+node1.hal9000.com openshift_node_group_name='node-config-compute'
+node2.hal9000.com openshift_node_group_name='node-config-compute'
+node3.hal9000.com openshift_node_group_name='node-config-compute'
 
-
+###########################################################################
+### Ansible Vars
+###########################################################################
 [OSEv3:vars]
-# SSH user, this user should allow ssh based auth without requiring a password
-ansible_user=root
-# If ansible_ssh_user is not root, ansible_become must be set to true
+# Admin user created in previous section
+ansible_ssh_user=root
+
 # ansible_become=true
 
-deployment_type=origin
+# Deployment type
 openshift_deployment_type=origin
+# openshift_deployment_type=openshift-enterprise
 
-openshift_enable_service_catalog=true
-ansible_service_broker_install=true
+# WARNING: only disable these checks in LAB/TEST environments(Do not use in production)
+openshift_disable_check="disk_availability,memory_availability"
 
-containerized=false
-os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
-openshift_disable_check=disk_availability,docker_storage,memory_availability,docker_image_availability
+###########################################################################
+### OpenShift Registries Locations
+###########################################################################
+# use HTPasswd for authentication
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 
-openshift_node_kubelet_args={'pods-per-core': ['10']}
+###########################################################################
+### OpenShift Master Vars
+###########################################################################
+# define default sub-domain for Master node
+openshift_master_default_subdomain=apps.hal9000.com
 
-openshift_release=v3.9.0
-openshift_pkg_version=-3.9.0
-openshift_image_tag=v3.9.0
-openshift_service_catalog_image_version=v3.9.0
-template_service_broker_image_version=v3.9.0
-osm_use_cockpit=true
+###########################################################################
+# image for a cluster with a working registry-console in 3.11
+###########################################################################
+openshift_cockpit_deployer_image='docker.io/timbordemann/cockpit-kubernetes:latest'
 
-# Install the router on dedicated infra node
-openshift_hosted_router_selector='region=infra'
-openshift_master_default_subdomain=apps.openshift.hal9000.com
-openshift_public_hostname=master.openshift.hal9000.com
-
-# Install the image registry on dedicated infra node
-openshift_hosted_registry_selector='region=infra'
+# allow unencrypted connection within cluster
+openshift_docker_insecure_registries=192.168.1.16/16
 ```
 
-### Step 9: Check prerequisites to deply OpenShift cluster on master Node
-
+#### Run prerequisites playbook
 ```
-ansible-playbook -i ~/inventory.ini playbooks/prerequisites.yml
-```
-
-### Step 10: Deploy OpenShift cluster on master node
-
-```
-ansible-playbook -i ~/inventory.ini playbooks/deploy_cluster.yml
+ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
 ```
 
-Now you have to wait approx 20-30 minutes to complete the installation. 
-
-### Step 12: Create an admin user in OpenShift with Password from master node
-
-For writing this tutorial I use : PasSSw0rd, remember to replace this password with a much more robust one.
-
-#### Install httpd-tools on master
-
-`htpasswd -c /etc/origin/master/htpasswd admin`
-
+#### Run deploy cluster playbook
 ```
-New password: PasSSw0rd
-Re-type new password: PasSSw0rd
+ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml
 ```
 
-`ls -l /etc/origin/master/htpasswd`
-
-`cat /etc/origin/master/htpasswd`
-
-#### Open /etc/origin/master/master-config.yaml file and do the following changes
+You have to get something like this.
 
 ```
-  identityProviders:
-  - challenge: true
-    login: true
-    mappingMethod: claim
-    name: allow_all
-    provider:
-      apiVersion: v1
-      kind: HTPasswdPasswordIdentityProvider		## This line
-      file: /etc/origin/master/htpasswd			## This line
+INSTALLER STATUS ****************************************************************************************************************************************************************************************
+Initialization               : Complete (0:00:33)
+Health Check                 : Complete (0:02:18)
+Node Bootstrap Preparation   : Complete (0:11:42)
+etcd Install                 : Complete (0:00:55)
+Master Install               : Complete (0:05:17)
+Master Additional Install    : Complete (0:00:34)
+Node Join                    : Complete (0:00:27)
+Hosted Install               : Complete (0:00:53)
+Cluster Monitoring Operator  : Complete (0:02:49)
+Web Console Install          : Complete (0:01:35)
+Console Install              : Complete (0:00:28)
+metrics-server Install       : Complete (0:00:01)
+Service Catalog Install      : Complete (0:04:50)
 ```
 
-#### Restart the below services
+If after the execution you do not have an error message and you get a complete on all the steps, bravo! Openshift Origin is installed.
 
-`systemctl restart origin-master-controllers.service`
-
-`systemctl restart origin-master-api.service`
-
-### Step 13: Assign cluster-admin role to admin user
-
-`oc adm policy add-cluster-role-to-user cluster-admin admin`
-
-### Step 14: Login as admin user on Openshift CLI
-
-`oc login`
+### Useful commands to verify that it works
+#### See the state of your nodes
+```
+oc get nodes
+```
+You have to get something like this.
 
 ```
-Authentication required for https://master.hal9000.com:8443 (openshift)
-Username: admin
-Password: PasSSw0rd
-Login successful
+NAME                 STATUS    ROLES          AGE       VERSION
+master.hal9000.com   Ready     infra,master   20m       v1.11.0+d4cacc0
+node1.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
+node2.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
+node3.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
 ```
 
-You have access to the following projects and can switch between them with 'oc project <projectname>':
-
-  * default
-  * kube-public
-  * kube-system
-  * logging
-  * management-infra
-  * openshift
-  * openshift-infra
-  * openshift-node
-  * openshift-web-console
-
-Using project "default".
-
-`oc whoami`
-
-`admin`
-
-### Step 15: List the projects, pods, nodes, replication controllers, services and deployment Config
-
-`oc get projects`
+#### View status with labels
+```
+oc get nodes --show-labels=true
+```
+You have to get something like this.
 
 ```
-NAME                    DISPLAY NAME   STATUS
-default                                Active
-kube-public                            Active
-kube-system                            Active
-logging                                Active
-management-infra1                       Active
-openshift                              Active
-openshift-infra1                        Active
-openshift-node                         Active
-openshift-web-console                  Active
+NAME                 STATUS    ROLES          AGE       VERSION           LABELS
+master.hal9000.com   Ready     infra,master   20m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.hal9000.com,node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true
+node1.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.hal9000.com,node-role.kubernetes.io/compute=true
+node2.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.hal9000.com,node-role.kubernetes.io/compute=true
+node3.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.hal9000.com,node-role.kubernetes.io/compute=true
 ```
 
-`oc get nodes`
+#### See the state of your pods
+```
+oc get pods
+```
+You have to get something like this.
 
 ```
-NAME                 STATUS    ROLES     AGE       VERSION
-master.hal9000.com   Ready     master    29m       v1.9.1+a0ce1bc657
-node1.hal9000.com    Ready     compute   22m       v1.9.1+a0ce1bc657
-node2.hal9000.com    Ready     compute   22m       v1.9.1+a0ce1bc657
+NAME                       READY     STATUS    RESTARTS   AGE
+docker-registry-1-b528c    1/1       Running   0          43m
+registry-console-1-frrb9   1/1       Running   0          43m
+router-1-wz4bg             1/1       Running   0          43m
 ```
 
-`oc get pod --all-namespaces`
+```
+oc describe pod registry-console-1-frrb9
+```
+You have to get something like this.
 
 ```
-NAMESPACE               NAME                          READY     STATUS    RESTARTS   AGE
-default                 docker-registry-1-krmpx       1/1       Running   0          15m
-default                 registry-console-1-z9sbd      1/1       Running   0          14m
-default                 router-1-q7g5v                1/1       Running   0          15m
-openshift-web-console   webconsole-5f649b49b5-hr9dq   1/1       Running   0          14m
+Name:               registry-console-1-frrb9
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               master.hal9000.com/192.168.148.130
+Start Time:         Thu, 01 Oct 2020 16:42:36 -0400
+Labels:             deployment=registry-console-1
+                    deploymentconfig=registry-console
+                    name=registry-console
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=registry-console
+                    openshift.io/deployment.name=registry-console-1
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.128.0.6
+Controlled By:      ReplicationController/registry-console-1
+Containers:
+  registry-console:
+    Container ID:   docker://5e6ff90a80d38a3a36981631e1e86025e329f9b7145c4c4ec469afbc05736a6f
+    Image:          docker.io/timbordemann/cockpit-kubernetes:latest
+    Image ID:       docker-pullable://docker.io/timbordemann/cockpit-kubernetes@sha256:f38c7b0d2b85989f058bf78c1759bec5b5d633f26651ea74753eac98f9e70c9b
+    Port:           9090/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 01 Oct 2020 16:43:56 -0400
+    Ready:          True
+    Restart Count:  0
+    Liveness:       http-get http://:9090/ping delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:      http-get http://:9090/ping delay=0s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      OPENSHIFT_OAUTH_PROVIDER_URL:  https://master.hal9000.com:8443
+      OPENSHIFT_OAUTH_CLIENT_ID:     cockpit-oauth-client
+      KUBERNETES_INSECURE:           false
+      COCKPIT_KUBE_INSECURE:         false
+      REGISTRY_ONLY:                 true
+      REGISTRY_HOST:                 docker-registry-default.apps.hal9000.com
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-mcsbs (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-mcsbs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-mcsbs
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/master=true
+Tolerations:     <none>
+Events:
+  Type    Reason     Age   From                         Message
+  ----    ------     ----  ----                         -------
+  Normal  Scheduled  44m   default-scheduler            Successfully assigned default/registry-console-1-frrb9 to master.hal9000.com
+  Normal  Pulling    44m   kubelet, master.hal9000.com  pulling image "docker.io/timbordemann/cockpit-kubernetes:latest"
+  Normal  Pulled     42m   kubelet, master.hal9000.com  Successfully pulled image "docker.io/timbordemann/cockpit-kubernetes:latest"
+  Normal  Created    42m   kubelet, master.hal9000.com  Created container
+  Normal  Started    42m   kubelet, master.hal9000.com  Started container
 ```
 
-`oc get rc `
+The adresse of your OKD console is here : OPENSHIFT_OAUTH_PROVIDER_URL:  https://master.hal9000.com:8443
 
+Because it's not possible to access to this address with the IP, you should open the hosts file of the computer you want to use to access to the OKD console and add the master DNS ident to the file.
 ```
-NAME                 DESIRED   CURRENT   READY     AGE
-docker-registry-1    1         1         1         15m
-registry-console-1   1         1         1         14m
-router-1             1         1         1         16m
+192.168.1.16   master.hal9000.com  master
 ```
 
-`oc get svc`
+#### Create User Accounts for OKD console
+You can use the httpd-tools package to obtain the htpasswd binary that can generate these accounts.
 
 ```
-NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
-docker-registry    ClusterIP   172.30.34.127    <none>        5000/TCP                  16m
-kubernetes         ClusterIP   172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     35m
-registry-console   ClusterIP   172.30.62.197    <none>        9000/TCP                  15m
-router             ClusterIP   172.30.141.143   <none>        80/TCP,443/TCP,1936/TCP   16m
+yum -y install httpd-tools
 ```
 
-`oc get dc`
+##### Create a user account
 
 ```
-NAME               REVISION   DESIRED   CURRENT   TRIGGERED BY
-docker-registry    1          1         1         config
-registry-console   1          1         1         config
-router             1          1         1         config
+touch /etc/origin/master/htpasswd
+htpasswd -b /etc/origin/master/htpasswd admin redhat
 ```
 
-#### Verifying multiple etcd hosts
+You have created a user, admin, with the password, redhat.
 
-On the master host, verify the etcd cluster health, substituting for the FQDNs of your etcd hosts in the following.
-
-`yum install etcd -y`
-
-`etcdctl -C https://master.openshift.hal9000.com:2379 --ca-file=/etc/origin/master/master.etcd-ca.crt --cert-file=/etc/origin/master/master.etcd-client.crt --key-file=/etc/origin/master/master.etcd-client.key cluster-health`
-
+##### Restart OpenShift before going forward
 ```
-member b211b9f9d8f23828 is healthy: got healthy result from https://192.168.56.10:2379
-cluster is healthy
+master-restart api
+master-restart controllers
 ```
 
-Also verify the member list is correct.
-
-`etcdctl -C https://master.openshift.hal9000.com:2379 --ca-file=/etc/origin/master/master.etcd-ca.crt --cert-file=/etc/origin/master/master.etcd-client.crt --key-file=/etc/origin/master/master.etcd-client.key member list`
-
+Give this user account cluster-admin privileges, which allows it to do everything.
 
 ```
-b211b9f9d8f23828: name=master.hal9000.com peerURLs=https://192.168.56.10:2380 clientURLs=https://192.168.56.10:2379 isLeader=true
+oc adm policy add-cluster-role-to-user cluster-admin admin
 ```
 
-Now you can access OpenShift Cluster using Web Browser as following.
+### Access the OKD console
 
+[https://master.hal9000.com:8443](https://master.hal9000.com:8443)
 
-[https://192.168.148.130:8443 ](https://192.168.148.130:8443)
+![OKD Cockpit](images/OKD_console.jpeg)
 
-* Username: admin
-* Password: PasSSw0rd
-
-
-### Step 17: Create a demo project 
-
-* Click on "Create Project"
-	* Name: demo
-	* Display Name: demo project
-	* Description: This is Demo Project
-* Click on Create
-* Now Deploy an application in demo project for testing
-	* Click in demo project -> Click on Brows Catalog -> Select PHP -> Next
-	* Version : 7.0 - latest
-	* Application Name: demoapp1
-	* Git Repo: https://github.com/sureshchandrarhca15/OpenShift39.git
-* Next -> Finish
-* Now click on Overview in demo project
-* See, demoapp1 build is running. so wait for build completion.
-
-* Once build completed, there is a Pod Running for testapp and will have an URL as below
-	* [http://demoapp1-demo.apps.openshift.hal9000.com ](http://demoapp1-demo.apps.openshift.hal9000.com)
-	* Now click on Pod Icon to get the details.
-
-NOTE: we don't have DNS to resolve App URL. So, we are going to use /etc/hosts file to resolve it using infra node IP Address. Because on infra node our router pod is running so all traffic will be routed from infra node in OpenShift Cluster. 
-
-`vim /etc/hosts`
-
-```
-#Add the below line
-192.168.0.53	demoapp1-demo.apps.openshift.hal9000.com
-```
-
-`:wq`
-
-Now Click on Pod URL Link and application should be accessible. 
-
-NOTE: You have to configure /etc/hosts file on that system from where you are accessing the Openshift Dashboard. 
