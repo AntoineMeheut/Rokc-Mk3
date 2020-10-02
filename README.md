@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/AntoineMeheut/Rokc-Mk2">
+  <a href="https://github.com/AntoineMeheut/Rokc-Mk3">
     <img src="images/lattepanda.png" alt="LattePanda" width="150" height="150">
     <img src="images/openshift.png" alt="Openshift" width="150" height="150">
     <img src="images/kubernetes.png" alt="Kubernetes" width="150" height="150">
@@ -20,7 +20,7 @@
   <h3 align="center">LattePanda Openshift Kubernetes Cluster</h3>
 
   <p align="center">
-    Rokc Mark 2 was born out of a wall I ran into while trying to compile Openshift for ARM on Rokc-Mk1 project. It doesn't matter, his little brother is a new adventure of reflection, discovery, reading, training and sharing. By keeping the same technical objective to run a private cloud with Openshift, deploy applications and work on security to improve and share my knowledge on the Sec of DevSecOps.
+    Rokc Mark 3 was born out of a wall I ran into while trying to compile Openshift for ARM on Rokc-Mk1 project. It doesn't matter, his little brother is a new adventure of reflection, discovery, reading, training and sharing. By keeping the same technical objective to run a private cloud with Openshift, deploy applications and work on security to improve and share my knowledge on the Sec of DevSecOps.
     <br />
     <br />
     <a href="https://github.com/AntoineMeheut/Rock-Mk2/issues">Report Bug</a>
@@ -379,8 +379,8 @@ The address is like this: https://XXX.XXX.X.XX:9090
 
 ## Clone this repo
 
-	git clone https://github.com/AntoineMeheut/Rokc-Mk2.git Rokc-Mk2
-	cd Rokc-Mk2
+	git clone https://github.com/AntoineMeheut/Rokc-Mk3.git Rokc-Mk3
+	cd Rokc-Mk3
 
 ## Install your personal PaaS
 This tutorial is designed to share with you my experience of installing PaaS on equipment that you can have at home, without transforming your living room into a server room.
@@ -1002,15 +1002,15 @@ Project Link: [https://github.com/AntoineMeheut/Rokc](https://github.com/Antoine
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/AntoineMeheut/Rokc-Mk2?color=green
-[contributors-url]: https://github.com/AntoineMeheut/Rokc-Mk2/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/AntoineMeheut/Rokc-Mk2
-[forks-url]: https://github.com/AntoineMeheut/Rokc-Mk2/network/members
-[stars-shield]: https://img.shields.io/github/stars/AntoineMeheut/Rokc-Mk2
-[stars-url]: https://github.com/AntoineMeheut/Rokc-Mk2/stargazers
-[issues-shield]: https://img.shields.io/github/issues/AntoineMeheut/Rokc-Mk2
-[issues-url]: https://github.com/AntoineMeheut/Rokc-Mk2/issues
-[license-shield]: https://img.shields.io/github/license/AntoineMeheut/Rokc-Mk2
-[license-url]: https://github.com/AntoineMeheut/Rokc-Mk2/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/AntoineMeheut/Rokc-Mk3?color=green
+[contributors-url]: https://github.com/AntoineMeheut/Rokc-Mk3/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/AntoineMeheut/Rokc-Mk3
+[forks-url]: https://github.com/AntoineMeheut/Rokc-Mk3/network/members
+[stars-shield]: https://img.shields.io/github/stars/AntoineMeheut/Rokc-Mk3
+[stars-url]: https://github.com/AntoineMeheut/Rokc-Mk3/stargazers
+[issues-shield]: https://img.shields.io/github/issues/AntoineMeheut/Rokc-Mk3
+[issues-url]: https://github.com/AntoineMeheut/Rokc-Mk3/issues
+[license-shield]: https://img.shields.io/github/license/AntoineMeheut/Rokc-Mk3
+[license-url]: https://github.com/AntoineMeheut/Rokc-Mk3/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/antoine-meheut
