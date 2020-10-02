@@ -337,8 +337,7 @@ This tutorial is independent and is part of a project that will assemble several
 
 ## Deploying OpenShift Origin 3.11 on bare metal cluster
 ### Inspiration
-* [https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=1](https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=1)
-* [https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=6](https://www.server-world.info/en/note?os=CentOS_7&p=openshift311&f=6)
+* [Installing OKD documentation](https://docs.okd.io/3.11/install/running_install.html)
 
 ### Diagram of infrastructure
 ```
@@ -950,9 +949,7 @@ Project Link: [https://github.com/AntoineMeheut/Rokc](https://github.com/Antoine
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-* [Fabian Affolter](https://github.com/fabaff/fedora-ansible) Ansible playbook for Fedora software installation
-was inspire from is repository
-* 
+* [Installing OKD documentation](https://docs.okd.io/3.11/install/running_install.html)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
