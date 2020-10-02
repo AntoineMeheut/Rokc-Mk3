@@ -376,7 +376,7 @@ ip addr
 
 The address is like this: https://XXX.XXX.X.XX:9090
 
-![Centos Cockpit](images/centos-cockpit.png)
+![Cockpit](images/Centos-cockpit.png)
 
 ## Clone this repo
 
