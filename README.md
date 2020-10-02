@@ -406,10 +406,10 @@ This tutorial is independent and is part of a project that will assemble several
 ### Infrastructure Setup
 | Hostname | IP Address | CPU | Thread | RAM HDD | eMMC | NVMe SSD | OS | Role |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | master Node |
-| node1.openshift.hal9000.com | 192.168.1.17 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 1 |
-| node2.openshift.hal9000.com | 192.168.1.18 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 2 |
-| node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 3 |
+| master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Master |
+| node1.openshift.hal9000.com | 192.168.1.17 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Node 1 |
+| node2.openshift.hal9000.com | 192.168.1.18 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Node 2 |
+| node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Node 3 |
 
 ### Preparing all Nodes
 #### Download and flash Centos-7 on a USB key
