@@ -32,39 +32,85 @@
 
 
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
+# Table of Contents
 
-* [About the Project](#about-the-project)
-  * [My goals](#My-goals)
-  * [Features](#Features)
-  * [Feedback](#Feedback)
-  * [Experience sharing](#Experience-sharing)
-* [Create a private cloud](#Create-a-private-cloud)
-  * [Why create a private cloud](#Why-create-a-private-cloud)
-  * [Some information about data](#Some-information-about-data)
-  * [OpenShift presentation](#OpenShift-presentation)
-  * [Why use Openshift](#Why-use-Openshift)
-  * [What can be done with Openshift](#What-can-be-done-with-Openshift)
-  * [A bit of vocabulary](#A-bit-of-vocabulary)
-  * [How Openshift works](#How-Openshift-works)
-* [Hardware](#Hardware)
-  * [Shopping list](#Shopping-list)
-* [Software](#Software)
-  * [Clone this repo](#Clone-this-repo)
-  * [Setup SD Cards](#Setup-SD-Cards)
-  * [Install flash](#Install-flash)
-  * [](#)
-
-* [DevSecOps](#DevSecOps) **TODO**
-	* [What is this](#What-is-this) **TODO**
-	* [How to do](#How-to-do) **TODO**
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
-
-
+* [About the Project](about-the-project)
+	* [My goals](My-goals)
+	* [Features](Features)
+	* [Feedback](Feedback)
+	* [Experience sharing](Experience-sharing)
+* [Create a private cloud](Create-a-private-cloud)
+	* [Why create a private cloud](Why-create-a-private-cloud)
+	* [Some information about data](Some-information-about-data)
+	* [OpenShift presentation](OpenShift-presentation)
+	* [Why use Openshift](Why-use-Openshift)
+	* [What can be done with Openshift](What-can-be-done-with-Openshift)
+	* [A bit of vocabulary](A-bit-of-vocabulary)
+	* [How Openshift works](How-Openshift-works)
+* [Hardware](Hardware)
+	* [Shopping list](Shopping-list)
+	* [Cluster assembly](Cluster-assembly)
+* [Software](Software)
+	* [Lattepanda software installation](Lattepanda-software-installation)
+	* [How to install the OS](How-to-install-the-OS)
+	* [Router settings](Router-settings)
+	* [Router Operation](Router-Operation)
+	* [Installing the OS on the cards](Installing-the-OS-on-the-cards)
+		* [Install the OS on each card](Install-the-OS-on-each-card)
+	* [End of assembly and SSH access to servers](End-of-assembly-and-SSH-access-to-servers)
+* [Clone this repo](Clone-this-repo)
+* [Install your personal PaaS](Install-your-personal-PaaS)
+* [Deploying OpenShift Origin 3.11 on bare metal cluster](Deploying-OpenShift-Origin-3.11-on-bare-metal-cluster)
+	* [Inspiration](Inspiration)
+	* [Diagram of infrastructure](Diagram-of-infrastructure)
+	* [Infrastructure Setup](Infrastructure-Setup)
+	* [Preparing all Nodes](Preparing-all-Nodes)
+		* [Download and flash Centos-7 on a USB key](Download-and-flash-Centos-7-on-a-USB-key)
+		* [Why a SD card ?](Why-a-SD-card-?)
+		* [Install Centos on LattePanda](Install-Centos-on-LattePanda)
+		* [Installing Cockpit Admin Tool on CentOS 7](Installing-Cockpit-Admin-Tool-on-CentOS-7)
+			* [Install Cockpit](Install-Cockpit)
+			* [Install additional Cockpit packages](Install-additional-Cockpit-packages)
+			* [Enable Cockpit](Enable-Cockpit)
+			* [Add cockpit to firewall](Add-cockpit-to-firewall)
+			* [Network setup](Network-setup)
+				* [Set the hostname for each corresponding node](Set-the-hostname-for-each-corresponding-node)
+				* [Configure static ip](Configure-static-ip)
+				* [Configure names resolution](Configure-names-resolution)
+			* [Openshift Origin 3.11 installation](Openshift-Origin-3.11-installation)
+				* [Installation de OKD 3.11 et de Ansible](Installation-de-OKD-3.11-et-de-Ansible)
+				* [Add docker to firewall](Add-docker-to-firewall)
+				* [Now you can reboot your node](Now-you-can-reboot-your-node)
+				* [If you want to stop a node](If-you-want-to-stop-a-node)
+	* [Connect to your nodes cockpit interfaces](Connect-to-your-nodes-cockpit-interfaces)
+	* [Deploying and starting Openshift Origin 3.11 from master node](Deploying-and-starting-Openshift-Origin-3.11-from-master-node)
+		* [Preparation on master only](Preparation-on-master-only)
+			* [Creating an RSA key](Creating-an-RSA-key)
+			* [Declare the target nodes for the key](Declare-the-target-nodes-for-the-key)
+			* [Send the public-key to all the nodes](Send-the-public-key-to-all-the-nodes)
+		* [Preparing the hosts file for Ansible](Preparing-the-hosts-file-for-Ansible)
+		* [Run prerequisites playbook](Run-prerequisites-playbook)
+		* [Run deploy cluster playbook](Run-deploy-cluster-playbook)
+	* [Useful commands to verify that it works](Useful-commands-to-verify-that-it-works)
+		* [See the state of your nodes](See-the-state-of-your-nodes)
+		* [View status with labels](View-status-with-labels)
+		* [See the state of your pods](See-the-state-of-your-pods)
+		* [Create User Accounts for OKD console](Create-User-Accounts-for-OKD-console)
+			* [Create a user account](Create-a-user-account)
+			* [Restart OpenShift before going forward](Restart-OpenShift-before-going-forward)
+	* [Access the OKD console](Access-the-OKD-console)
+* [Openshift monitoring](Openshift-monitoring) **TODO**
+* [Application deployment](Application-deployment)
+ 	* [Deploy a test application](Deploy-a-test-application)
+* [Application monitoring](Application-monitoring) **TODO**
+* [DevSecOps](DevSecOps) **TODO**
+	* [What is this](What-is-this) **TODO**
+	* [How to do](How-to-do) **TODO**
+* [Roadmap](Roadmap)
+* [Contributing](Contributing)
+* [License](License)
+* [Contact](Contact)
+* [Acknowledgements](Acknowledgements)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -92,15 +138,22 @@ are not accessible to the cluster
 
 ### Features
 
-* Hardware pattern
-* 
+* Create a private cloud
+* Hardware architecture
+* Installation of a personal cloud
+* Deploying OpenShift Origin 3.11 on bare metal cluster
+* Openshift monitoring
+* Application deployment
+* Application monitoring
+* DevSecOps
 
 ### Feedback
 
-* 
+* The existing documentation for the installation of OKD is very precise and experimentation shows that it is really necessary to share the precise actions carried out on the servers, to prepare them for the correct execution of the ansible scripts for the OKD installation, it is the objective of this sharing
+* To get to the target quickly and because I did not plan to open internet access to this Cloud, I voluntarily reduced the operations for securing this Cloud to a minimum. If you reproduce this sharing, therefore be careful about the use you will make of this Cloud
 
 ### Experience sharing
-* You may need to adapt the playbooks and scripts from this project to create your own cluster
+* You may need to adapt the scripts from this project to create your own cloud
 * The way I do it's simple, I open a terminal to run scripts and playbooks, at the same time I open the project
 in an IDE and adapt the code of the project when necessary
 * To save time in problem analysis, you can add to each ansible command the --vvv option, which allows you to have
@@ -254,7 +307,7 @@ and this software [etcher](https://www.balena.io/etcher/)
 Then it is very important to proceed in this way, I carry out the assembly part of the cards in cluster and
 their connection to the network before installing the OS. Apart from the fact that this is always how I do it
 usually this allows the OS installer software to detect the network and activate the software layer
-network at the time of installation. If you installed a Fedora OS server on a card without it being connected to the
+network at the time of installation. If you installed a Centos server on a card without it being connected to the
 network, when you start it, the network software layer will not be active and you will not be able to connect
 in ssh à la carte.
 
@@ -289,25 +342,25 @@ Turn on the card and press F7 to get the boot media choice menu.
 ![boot](images/Centos-1.jpeg)
 
 I do the US installation by default, because I use a querty keyboard and once the Centos cockpit is installed, it manages for me the azerty keyboard of my macbook.
-![fedora interface](images/Centos-2.jpeg)
+![Language](images/Centos-2.jpeg)
 
 Choose the installation target, the little orange triangle in the photo.
-![fedora interface](images/Centos-3.jpeg)
+![Destination](images/Centos-3.jpeg)
 
 The installation is done on the onboard memory of the card.
-![fedora interface](images/Centos-4.jpeg)
+![Target](images/Centos-4.jpeg)
 
 If you had an OS already installed on the card, consider freeing up this space.
-![fedora interface](images/Centos-5.jpeg)
+![Clean](images/Centos-5.jpeg)
 
 Above all, remember to activate the network on the RJ45 when installing the OS, because doing these operations after installation is much longer, the installer handling all this very well for you.
-![fedora interface](images/Centos-6.jpeg)
+![Network](images/Centos-6.jpeg)
 
 During the installation, you must choose a password for the admin account and create an origin user account. Remember to indicate that this user account has administrator rights, this is not what is done in a secure installation, but for our OpenShift Origin test environment this will be sufficient. Be careful if you then want to host applications accessible from the internet on your PaaS, you should not proceed in this way and add security to all the steps of this tutorial. I do not have this objective of applications and therefore to save time and simplify this tutorial, I will not do all the steps of securing the platform.
-![fedora interface](images/Centos-7.jpeg)
+![User](images/Centos-7.jpeg)
 
 You can move on to the next card, while the installer completes that card.
-![fedora interface](images/Centos-8.jpeg)
+![Cockpit(images/Centos-8.jpeg)
 
 ### End of assembly and SSH access to servers
 Once the 4 cards with their OS installed, you can then connect your computer to the local network of your cluster
@@ -354,10 +407,10 @@ This tutorial is independent and is part of a project that will assemble several
 ### Infrastructure Setup
 | Hostname | IP Address | CPU | Thread | RAM HDD | eMMC | NVMe SSD | OS | Role |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | master Node |
-| node1.openshift.hal9000.com | 192.168.1.17 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 1 |
-| node2.openshift.hal9000.com | 192.168.1.18 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 2 |
-| node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Fedora-32 | Worker Node 3 |
+| master.openshift.hal9000.com | 192.168.1.16 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | master Node |
+| node1.openshift.hal9000.com | 192.168.1.17 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 1 |
+| node2.openshift.hal9000.com | 192.168.1.18 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 2 |
+| node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Worker Node 3 |
 
 ### Preparing all Nodes
 #### Download and flash Centos-7 on a USB key
@@ -824,19 +877,30 @@ Give this user account cluster-admin privileges, which allows it to do everythin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 ```
 
-### Access the the OKD console
+### Access the OKD console
 
 [https://master.hal9000.com:8443](https://master.hal9000.com:8443)
 
 ![OKD Cockpit](images/OKD_console.jpeg)
 
-### 	Deploy a test application
+## Openshift monitoring
+**TODO** 
+
+## Application deployment
+### Deploy a test application with openshift CLI
+#### Create a new project
 ```
 oc login -u admin
 oc new-project test-project
+```
+
+#### Load an application on your project
+```
 oc new-app centos/ruby-25-centos7~https://github.com/sclorg/ruby-ex.git
 oc expose svc/ruby-ex
 ```
+
+#### Check your application status
 ```
 oc status
 ```
@@ -855,6 +919,7 @@ svc/ruby-ex - 172.30.6.251:8080
 2 infos identified, use 'oc status --suggest' to see details.
 ```
 
+#### Check your application pod
 ```
 oc get pods
 ```
@@ -865,6 +930,7 @@ NAME              READY     STATUS    RESTARTS   AGE
 ruby-ex-1-build   1/1       Running   0          1m
 ```
 
+#### Check you application service
 ```
 oc describe service ruby-ex
 ```
@@ -899,15 +965,10 @@ Session Affinity:  None
 Events:            <none>
 ```
 
+#### Try localy your application
 ```
 curl 172.30.6.251:8080
 ```
-
-## Openshift monitoring
-**TODO** 
-
-## Application deployment
-**TODO** 
 
 ## Application monitoring
 **TODO** 
