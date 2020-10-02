@@ -34,84 +34,84 @@
 <!-- TABLE OF CONTENTS -->
 # Table of Contents
 
-* [About the Project](about-the-project)
-	* [My goals](My-goals)
-	* [Features](Features)
-	* [Feedback](Feedback)
-	* [Experience sharing](Experience-sharing)
-* [Create a private cloud](Create-a-private-cloud)
-	* [Why create a private cloud](Why-create-a-private-cloud)
-	* [Some information about data](Some-information-about-data)
-	* [OpenShift presentation](OpenShift-presentation)
-	* [Why use Openshift](Why-use-Openshift)
-	* [What can be done with Openshift](What-can-be-done-with-Openshift)
-	* [A bit of vocabulary](A-bit-of-vocabulary)
-	* [How Openshift works](How-Openshift-works)
-* [Hardware](Hardware)
-	* [Shopping list](Shopping-list)
-	* [Cluster assembly](Cluster-assembly)
-* [Software](Software)
-	* [Lattepanda software installation](Lattepanda-software-installation)
-	* [How to install the OS](How-to-install-the-OS)
-	* [Router settings](Router-settings)
-	* [Router Operation](Router-Operation)
-	* [Installing the OS on the cards](Installing-the-OS-on-the-cards)
-		* [Install the OS on each card](Install-the-OS-on-each-card)
-	* [End of assembly and SSH access to servers](End-of-assembly-and-SSH-access-to-servers)
-* [Clone this repo](Clone-this-repo)
-* [Install your personal PaaS](Install-your-personal-PaaS)
-* [Deploying OpenShift Origin 3.11 on bare metal cluster](Deploying-OpenShift-Origin-3.11-on-bare-metal-cluster)
-	* [Inspiration](Inspiration)
-	* [Diagram of infrastructure](Diagram-of-infrastructure)
-	* [Infrastructure Setup](Infrastructure-Setup)
-	* [Preparing all Nodes](Preparing-all-Nodes)
-		* [Download and flash Centos-7 on a USB key](Download-and-flash-Centos-7-on-a-USB-key)
-		* [Why a SD card ?](Why-a-SD-card-?)
-		* [Install Centos on LattePanda](Install-Centos-on-LattePanda)
-		* [Installing Cockpit Admin Tool on CentOS 7](Installing-Cockpit-Admin-Tool-on-CentOS-7)
-			* [Install Cockpit](Install-Cockpit)
-			* [Install additional Cockpit packages](Install-additional-Cockpit-packages)
-			* [Enable Cockpit](Enable-Cockpit)
-			* [Add cockpit to firewall](Add-cockpit-to-firewall)
-			* [Network setup](Network-setup)
-				* [Set the hostname for each corresponding node](Set-the-hostname-for-each-corresponding-node)
-				* [Configure static ip](Configure-static-ip)
-				* [Configure names resolution](Configure-names-resolution)
-			* [Openshift Origin 3.11 installation](Openshift-Origin-3.11-installation)
-				* [Installation de OKD 3.11 et de Ansible](Installation-de-OKD-3.11-et-de-Ansible)
-				* [Add docker to firewall](Add-docker-to-firewall)
-				* [Now you can reboot your node](Now-you-can-reboot-your-node)
-				* [If you want to stop a node](If-you-want-to-stop-a-node)
-	* [Connect to your nodes cockpit interfaces](Connect-to-your-nodes-cockpit-interfaces)
-	* [Deploying and starting Openshift Origin 3.11 from master node](Deploying-and-starting-Openshift-Origin-3.11-from-master-node)
-		* [Preparation on master only](Preparation-on-master-only)
-			* [Creating an RSA key](Creating-an-RSA-key)
-			* [Declare the target nodes for the key](Declare-the-target-nodes-for-the-key)
-			* [Send the public-key to all the nodes](Send-the-public-key-to-all-the-nodes)
-		* [Preparing the hosts file for Ansible](Preparing-the-hosts-file-for-Ansible)
-		* [Run prerequisites playbook](Run-prerequisites-playbook)
-		* [Run deploy cluster playbook](Run-deploy-cluster-playbook)
-	* [Useful commands to verify that it works](Useful-commands-to-verify-that-it-works)
-		* [See the state of your nodes](See-the-state-of-your-nodes)
-		* [View status with labels](View-status-with-labels)
-		* [See the state of your pods](See-the-state-of-your-pods)
-		* [Create User Accounts for OKD console](Create-User-Accounts-for-OKD-console)
-			* [Create a user account](Create-a-user-account)
-			* [Restart OpenShift before going forward](Restart-OpenShift-before-going-forward)
-	* [Access the OKD console](Access-the-OKD-console)
-* [Application deployment](Application-deployment)
- 	* [Deploy a test application with openshift CLI](Deploy-a-test-application-with-openshift-CLI)
- 		* [Create a new project](Create-a-new-project)
- 		* [Load an application on your project](Load-an-application-on-your-project)
- 		* [Check your application status](Check-your-application-status)
- 		* [Check your application pod](Check-your-application-pod)
- 		* [Check you application service](Check-you-application-service)
- 		* [Try localy your application](Try-localy-your-application)
-* [Roadmap](Roadmap)
-* [Contributing](Contributing)
-* [License](License)
-* [Contact](Contact)
-* [Acknowledgements](Acknowledgements)
+* [About the Project](#about-the-project)
+	* [My goals](#my-goals)
+	* [Features](#features)
+	* [Feedback](#feedback)
+	* [Experience sharing](#experience-sharing)
+* [Create a private cloud](#create-a-private-cloud)
+	* [Why create a private cloud](#why-create-a-private-cloud)
+	* [Some information about data](#some-information-about-data)
+	* [OpenShift presentation](#openShift-presentation)
+	* [Why use Openshift](#why-use-Openshift)
+	* [What can be done with Openshift](#what-can-be-done-with-Openshift)
+	* [A bit of vocabulary](#a-bit-of-vocabulary)
+	* [How Openshift works](#how-openshift-works)
+* [Hardware](#hardware)
+	* [Shopping list](#shopping-list)
+	* [Cluster assembly](#cluster-assembly)
+* [Software](#software)
+	* [Lattepanda software installation](#lattepanda-software-installation)
+	* [How to install the OS](#how-to-install-the-os)
+	* [Router settings](#router-settings)
+	* [Router operation](#router-operation)
+	* [Installing the OS on the cards](#installing-the-os-on-the-cards)
+		* [Install the OS on each card](#install-the-os-on-each-card)
+	* [End of assembly and SSH access to servers](#end-of-assembly-and-ssh-access-to-servers)
+* [Clone this repo](#clone-this-repo)
+* [Install your personal PaaS](#install-your-personal-paas)
+* [Deploying OpenShift Origin 3.11 on bare metal cluster](#deploying-openShift-origin-3.11-on-bare-metal-cluster)
+	* [Inspiration](#inspiration)
+	* [Diagram of infrastructure](#diagram-of-infrastructure)
+	* [Infrastructure Setup](#infrastructure-Setup)
+	* [Preparing all Nodes](#preparing-all-Nodes)
+		* [Download and flash Centos-7 on a USB key](#download-and-flash-centos-7-on-a-usb-key)
+		* [Why a SD card?](#why-a-sd-card?)
+		* [Install Centos on LattePanda](#install-centos-on-lattepanda)
+		* [Installing Cockpit Admin Tool on CentOS 7](#installing-cockpit-admin-tool-on-centOS-7)
+			* [Install Cockpit](#install-cockpit)
+			* [Install additional Cockpit packages](#install-additional-cockpit-packages)
+			* [Enable Cockpit](#enable-cockpit)
+			* [Add cockpit to firewall](#add-cockpit-to-firewall)
+			* [Network setup](#network-setup)
+				* [Set the hostname for each corresponding node](#set-the-hostname-for-each-corresponding-node)
+				* [Configure static ip](#configure-static-ip)
+				* [Configure names resolution](#configure-names-resolution)
+			* [Openshift Origin 3.11 installation](#openshift-origin-3.11-installation)
+				* [Installation of OKD 3.11 and Ansible](#installation-of-okd-3.11-and-Ansible)
+				* [Add docker to firewall](#add-docker-to-firewall)
+				* [Now you can reboot your node](#now-you-can-reboot-your-node)
+				* [If you want to stop a node](#if-you-want-to-stop-a-node)
+	* [Connect to your nodes cockpit interfaces](#connect-to-your-nodes-cockpit-interfaces)
+	* [Deploying and starting Openshift Origin 3.11 from master node](#deploying-and-starting-openshift-origin-3.11-from-master-node)
+		* [Preparation on master only](#preparation-on-master-only)
+			* [Creating an RSA key](#creating-an-RSA-key)
+			* [Declare the target nodes for the key](#declare-the-target-nodes-for-the-key)
+			* [Send the public-key to all the nodes](#send-the-public-key-to-all-the-nodes)
+		* [Preparing the hosts file for Ansible](#preparing-the-hosts-file-for-Ansible)
+		* [Run prerequisites playbook](#run-prerequisites-playbook)
+		* [Run deploy cluster playbook](#run-deploy-cluster-playbook)
+	* [Useful commands to verify that it works](#useful-commands-to-verify-that-it-works)
+		* [See the state of your nodes](#see-the-state-of-your-nodes)
+		* [View status with labels](#view-status-with-labels)
+		* [See the state of your pods](#see-the-state-of-your-pods)
+		* [Create User Accounts for OKD console](#create-user-accounts-for-okd-console)
+			* [Create a user account](#create-a-user-account)
+			* [Restart OpenShift before going forward](#restart-openShift-before-going-forward)
+	* [Access the OKD console](#access-the-okd-console)
+* [Application deployment](#application-deployment)
+ 	* [Deploy a test application with openshift CLI](#deploy-a-test-application-with-openshift-CLI)
+ 		* [Create a new project](#create-a-new-project)
+ 		* [Load an application on your project](#load-an-application-on-your-project)
+ 		* [Check your application status](#check-your-application-status)
+ 		* [Check your application pod](#check-your-application-pod)
+ 		* [Check you application service](#check-you-application-service)
+ 		* [Try localy your application](#try-localy-your-application)
+* [Roadmap](#roadmap)
+* [Contributing](#contributing)
+* [License](#license)
+* [Contact](#contact)
+* [Acknowledgements](#acknowledgements)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -325,7 +325,7 @@ everything related to networks can sometimes seem confusing, I will try to show 
 
 ![Cluster](images/cluster4.jpeg)
 
-### Router Operation
+### Router operation
 The mode of action of the router that we are going to choose is this. This allows you to connect your computer by RJ45
 to the network loop in which your cluster is located and this allows you to access the internet through your
 home wifi network. This allows you to make the necessary updates to your Cloud and it allows you to take
@@ -417,7 +417,7 @@ Download Centos 7 [CentOS-7-x86_64-Minimal-2003.iso](http://isoredirect.centos.o
 
 Flash a USB key, plug your LattePanda and add : keyboard, mouse, screen and a SD card on the LattePanda.
 
-#### Why a SD card ?
+#### Why a SD card?
 There is a small bug in the LattePanda bios which for the moment and to my knowledge has not yet been fixed. Once you have installed Centos on the card, it will permanently display a message indicating that Centos cannot restart the hardware slot of the SD card. The way to get rid of this message is to insert an SD card into the slot.
 
 #### Install Centos on LattePanda
@@ -427,7 +427,7 @@ Choose the USB key and start the installation.
 
 Warning: your nodes must be connected to the network switch and to the router, otherwise the configuration of the Ethernet protocol will not be carried out by the Centos installation program and this is not necessarily something that you want to do by hand after installation, we already have a lot to do.
 
-#### Installing Cockpit Admin Tool on CentOS 7
+#### Installing cockpit admin tool on CentOS 7
 Cockpit is very practical when you have to access a lot of servers and especially not to rack your brains to operate a Mackbook keyboard on a Centos server. Cockpit handles this for you and allows you to copy / paste your orders.
 
 Of course you have to think about deactivating it, for security, once you have finished, but here we are doing a test and there are no plans to open this PaaS to the outside. It would then be necessary to address all the notions of security on the servers and the PaaS itself.
@@ -534,7 +534,7 @@ vi /etc/hosts
 ```
 
 #### Openshift Origin 3.11 installation
-##### Installation de OKD 3.11 et de Ansible
+##### Installation of OKD 3.11 and Ansible
 On all Nodes, install OpenShift Origin 3.11 repository, Ansible and Docker.
 
 For Ansible, version 2.6, 2.7, 2.8, 2.9 are provided from CentOS Repository, but Openshift-Ansible is not supported on 2.8 or later, so install Ansible 2.7
