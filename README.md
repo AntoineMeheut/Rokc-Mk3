@@ -17,10 +17,10 @@
     <img src="images/kubernetes.png" alt="Kubernetes" width="150" height="150">
   </a>
 
-  <h3 align="center">LattePanda Openshift Kubernetes Cluster</h3>
+  <h3 align="center">Deploying OpenShift Origin 3.11 on bare metal cluster</h3>
 
   <p align="center">
-    Rokc Mark 3 was born out of a wall I ran into while trying to compile Openshift for ARM on Rokc-Mk1 project. It doesn't matter, his little brother is a new adventure of reflection, discovery, reading, training and sharing. By keeping the same technical objective to run a private cloud with Openshift, deploy applications and work on security to improve and share my knowledge on the Sec of DevSecOps.
+    Rokc Mark 3 is the realization on a bar metal target of the Rokc-Mk2 project. The development on virtual machines of the OpenShift Origin installation allowed me to confirm the purchase of the target cards.
     <br />
     <br />
     <a href="https://github.com/AntoineMeheut/Rock-Mk2/issues">Report Bug</a>
