@@ -99,13 +99,14 @@
 			* [Create a user account](Create-a-user-account)
 			* [Restart OpenShift before going forward](Restart-OpenShift-before-going-forward)
 	* [Access the OKD console](Access-the-OKD-console)
-* [Openshift monitoring](Openshift-monitoring) **TODO**
 * [Application deployment](Application-deployment)
- 	* [Deploy a test application](Deploy-a-test-application)
-* [Application monitoring](Application-monitoring) **TODO**
-* [DevSecOps](DevSecOps) **TODO**
-	* [What is this](What-is-this) **TODO**
-	* [How to do](How-to-do) **TODO**
+ 	* [Deploy a test application with openshift CLI](Deploy-a-test-application-with-openshift-CLI)
+ 		* [Create a new project](Create-a-new-project)
+ 		* [Load an application on your project](Load-an-application-on-your-project)
+ 		* [Check your application status](Check-your-application-status)
+ 		* [Check your application pod](Check-your-application-pod)
+ 		* [Check you application service](Check-you-application-service)
+ 		* [Try localy your application](Try-localy-your-application)
 * [Roadmap](Roadmap)
 * [Contributing](Contributing)
 * [License](License)
@@ -131,7 +132,6 @@ So let's go ...
 * Connect my MacBook to this cluster to manage and monitor it
 * Install Openshift with [Ansible](https://www.ansible.com/)
 * Deploy applications on this cluster
-* Start studying security, the famous Sec of DevSecOps
 * Being able to move this cluster, use it for demos and therefore : all works in environments where WiFi and network
 are not accessible to the cluster
 * Share my knowledge and recipes acquired
@@ -145,7 +145,6 @@ are not accessible to the cluster
 * Openshift monitoring
 * Application deployment
 * Application monitoring
-* DevSecOps
 
 ### Feedback
 
@@ -883,9 +882,6 @@ oc adm policy add-cluster-role-to-user cluster-admin admin
 
 ![OKD Cockpit](images/OKD_console.jpeg)
 
-## Openshift monitoring
-**TODO** 
-
 ## Application deployment
 ### Deploy a test application with openshift CLI
 #### Create a new project
@@ -970,15 +966,6 @@ Events:            <none>
 curl 172.30.6.251:8080
 ```
 
-## Application monitoring
-**TODO** 
-
-## DevSecOps
-**TODO** 
-### What is this
-**TODO** 
-### How to do
-**TODO** 
 <!-- ROADMAP -->
 ## Roadmap
 
