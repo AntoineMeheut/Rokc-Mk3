@@ -378,7 +378,7 @@ and therefore: we put the screen away, the calvier and the mouse!
 
 You must then locate the IP address of each of your cards and connect to the Centos server interface of
 each card.
-```
+```sh
 ip addr
 ```
 
@@ -402,7 +402,7 @@ This tutorial is independent and is part of a project that will assemble several
 * [Installing OKD documentation](https://docs.okd.io/3.11/install/running_install.html)
 
 ### Diagram of infrastructure
-```
+```sh
 --+------------------+------------------+------------------+-------------
   |192.168.1.16      |192.168.1.17      |192.168.1.18      |192.168.1.19
 +-+------------+   +-+------------+   +-+------------+   +-+------------+
