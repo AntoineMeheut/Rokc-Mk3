@@ -23,9 +23,9 @@
     Rokc Mark 3 is the realization on a bar metal target of the Rokc-Mk2 project. The development on virtual machines of the OpenShift Origin installation allowed me to confirm the purchase of the target cards.
     <br />
     <br />
-    <a href="https://github.com/AntoineMeheut/Rock-Mk2/issues">Report Bug</a>
+    <a href="https://github.com/AntoineMeheut/Rock-Mk3/issues">Report Bug</a>
     ·
-    <a href="https://github.com/AntoineMeheut/Rock-Mk2/issues">Request Feature</a>
+    <a href="https://github.com/AntoineMeheut/Rock-Mk3/issues">Request Feature</a>
   </p>
 </p>
 
@@ -65,9 +65,7 @@
 	* [Diagram of infrastructure](#diagram-of-infrastructure)
 	* [Infrastructure Setup](#infrastructure-Setup)
 	* [Preparing all Nodes](#preparing-all-Nodes)
-		* [Download and flash Centos-7 on a USB key](#download-and-flash-centos-7-on-a-usb-key)
 		* [Why a SD card?](#why-a-sd-card?)
-		* [Install Centos on LattePanda](#install-centos-on-lattepanda)
 		* [Installing Cockpit Admin Tool on CentOS 7](#installing-cockpit-admin-tool-on-centOS-7)
 			* [Install Cockpit](#install-cockpit)
 			* [Install additional Cockpit packages](#install-additional-cockpit-packages)
@@ -115,22 +113,22 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-The previous version of Rokc allowed me to create a Kubernetes Cloud on Raspberry Pi and to share the knowledge acquired
+The previous versions of Rokc allowed me to create a Kubernetes Cloud on Raspberry Pi, an Openshift Origin on VMs and to share the knowledge acquired
 for the hardware, the various installations, the ssh, the network and Ansible. I hit a wall, when I tried to compile
 openshift origin for ARM, I unfortunately did not manage to get an installable image on recent versions of openshift.
 It does not matter, after some research I decided to use Lattepanda machines, because I always want to be able to carry
 my Cloud with me, to show it to all the people who are wondering what a Cloud really is. .
 
 I hope that this sharing will be useful to you and will allow you to embark in your turn in the understanding
-and the manufacture of a Cloud. You will see it is not that complex.
+and the manufacture of a Cloud. You will see it's not that complex.
 
 So let's go ...
 
 ### My goals
 
 * Create a private cloud cluster from 4 [Lattepanda](https://www.lattepanda.com)
-* Connect my MacBook to this cluster to manage and monitor it
-* Install Openshift with [Ansible](https://www.ansible.com/)
+* Connect my MacBook to this cluster to use, manage and monitor it
+* Install Openshift Origin with [Ansible](https://www.ansible.com/)
 * Deploy applications on this cluster
 * Being able to move this cluster, use it for demos and therefore : all works in environments where WiFi and network
 are not accessible to the cluster
@@ -166,7 +164,7 @@ Well the answer is quite simple: "I do not wish to entrust my data and my applic
 before enjoying the advantages of a Cloud, you must think about the value and the confidentiality of the data
 and computer processing that you are going to deploy on this Cloud. I remain personally convinced that what has
 the most values is and will always restore the customers. And it is true that more and more companies are concerned
-about the value of the data that its customers entrust to it and also of the algorithms that process this data.
+about the value of the data that its customers entrust to it and also of the algorithms that process those data.
 
 It then becomes obvious that you cannot entrust just anything to just anyone and that reading the GCU of the different
 Cloud providers is very important.
@@ -180,12 +178,12 @@ of the data they entrust. To convince you, I can quote:
 
 * The Cloud Act which in 2018 raised awareness, because this law notably allows American courts to solicit
 from operators the personal communications of an individual without the latter being informed, nor his country
-of residence is not, nor that the country where these data are stored is.
+of residence, nor that the country where those data are stored.
 [CLOUD Act] (https://www.congress.gov/bill/115th-congress/senate-bill/2383/text)
 * The GDPR (General Data Protection Regulation) is a regulation of the European Union which strengthens
 and unifies data protection for individuals within the European Union.
 [GDPR] (https://afcdp.net/reglement-europeen-rgpd-indexe-commente/)
-* An example of the Google Drive GCU, which explains very clearly that Google can use your information to improve
+* An example of the Google Drive GCU, which explains very clearly that Google can use your data to improve
 its services. [Google Drive GCU] (https://support.google.com/drive/answer/2450387?hl=en)
 
 ### OpenShift presentation
@@ -199,7 +197,7 @@ Since version 3 and the big redesign, Openshift relies completely on Docker and 
 product will therefore depend on these two backbones.
 
 ### Why use Openshift
-If I had to retain a main reason for using Openshift, well I would say that it is much easier for a Cloud team
+If I had to retain a main reason for using Openshift, well I would say that it's much easier for a Cloud team
 to benefit from the Docker encapsulation work and especially Kubernetes which is carried out by the Red Hat teams.
 This makes it possible to concentrate on the services to be provided to end customers in companies such as trades
 and projects.
@@ -245,9 +243,9 @@ In principle, we deploy a Service by third of the architecture,
 ### How Openshift works
 Quickly, the node or nodes which control the others serve:
 
-* processing requests to the administration API,
-* to carry out image build operations and container deployment,
-* to ensure the resilience (replication) of the PODs where your applications operate,
+* process requests to the administration API,
+* carry out image build operations and container deployment,
+* ensure the resilience (replication) of the PODs where your applications operate,
 * he or they use a distributed etcd directory for configuration sharing and service discovery.
 
 The managed nodes host the PODs and run containers (application and / or Registry).
@@ -256,12 +254,16 @@ It is possible to interact with the platform through its REST API, CLI or via it
 
 ## Hardware
 ### Shopping list
-Here is the first part of a shopping list, with links (not affiliated) to references that I have used.
+Here is the shopping list, with links (not affiliated) to references that I have used.
 I let you search for other equipment and especially how to buy this equipment according to your favorite stores.
 
 This cluster must be able to operate without a network other than the local loop constituted by the cluster itself
 and the macbook which is connected to it, this allows the cluster to be taken for demonstrations in environments
 where the network is closed for reasons of security.
+
+This list of components also allows you to understand and share what the simplest representation of a Cloud is.
+All the clouds in the world, from the simplest to the most complex, are composed of: servers, linked together by network switches,
+connected to disks to store information. And yes a Cloud is just that.
 
 ![LattePanda Alpha 864](images/LattepandaAlpha864s.jpg)
 
@@ -274,11 +276,11 @@ where the network is closed for reasons of security.
 | 1 | [Router (for demo)](https://eu.dlink.com/fr/fr/for-home/routers-and-modems) |
 
 ### Cluster assembly
-You will have to mount the SSD disks in their location on the back of the Lattepanda Alpha, it is not very complicated.
+You will have to mount the SSD disks in their location on the back of the Lattepanda Alpha, it's not very complicated.
 
-The WiFi antennas are not mounted and available separately in the box, it is not mandatory to mount them, because
-they are intended to be glued on a box for the Lattepanda and that for this project we will use
-a card connection with RJ45.
+The WiFi antennas are not mounted and available separately in the box, it's not mandatory to mount them, because
+they are intended to be glued on a box for the Lattepanda and for this project we will use
+the RJ45 connection.
 
 In the end, I still mounted the WiFi antennas, in case I need this type of connection. As I chose
 to mount the 4 Lattepanda with the support screws of the Rapsberry cluster from the previous project, so I glued
@@ -296,42 +298,49 @@ when you start on the creation of a Cloud.
 
 The version I used is a server ISO: CentOS-7-x86_64-Minimal-2003.iso
 
+Centos OS is less well known than Ubuntu for example and the commands are often a little different between these two OS.
+It is for this reason that I placed in this tutorial, all the commands that I used to prepare the OS.
+
 With this version you will therefore not have a desktop on your OS, but do not panic, we will see below, how
-use the web console of each server, to avoid a lot of command line typing.
+use the web cockpit of each server, to avoid a lot of command line typing. You will just have to open this README file on a computer,
+connect to the nodes cockpit and copy / paste the commands.
 
 ### How to install the OS
 The first thing to do is download the iso and burn it on a usb key. For that I use a standard 16 Gb usb key
 and this software [etcher](https://www.balena.io/etcher/)
 
-Then it is very important to proceed in this way, I carry out the assembly part of the cards in cluster and
+Then it's very important to proceed in this way, I carry out the assembly part of the cards in cluster and
 their connection to the network before installing the OS. Apart from the fact that this is always how I do it
-usually this allows the OS installer software to detect the network and activate the software layer
+usually, this allows the OS installer software to detect the network and activate the software layer
 network at the time of installation. If you installed a Centos server on a card without it being connected to the
 network, when you start it, the network software layer will not be active and you will not be able to connect
-in ssh à la carte.
+in ssh to the node.
 
 After mounting the cluster, connecting them to the network switch and to the portable router, we get that.
 
 ![Cluster](images/cluster2.jpeg)
 
 ### Router settings
-So that the OS installation software can access the internet and also so that you can access your
-SSH servers from your computer, whether at home or on the go, you need to install a mini network
-local.
+So that the OS installation software can access the internet and also you can access your
+SSH nodes from your computer, whether at home or on the go, you need to install a mini local network.
 
-For this we will use the dlink Router and configure it to have the operating mode in Range Extender
-Fashion. The documentation of these small pieces of equipment is well done, you shouldn't have too many problems. And like
+For this we will use the dlink Router and configure it to have the operating mode in Range Extender.
+The documentation of these small pieces of equipment is well done, you shouldn't have too many problems. And like
 everything related to networks can sometimes seem confusing, I will try to show you what to do.
 
 ![Cluster](images/cluster4.jpeg)
 
 ### Router operation
-The mode of action of the router that we are going to choose is this. This allows you to connect your computer by RJ45
+The mode of action of the router that we are going to choose is Range Extender. This allows you to connect your computer by RJ45
 to the network loop in which your cluster is located and this allows you to access the internet through your
 home wifi network. This allows you to make the necessary updates to your Cloud and it allows you to take
 your Cloud with you for demonstrations.
 
 ![Routeur](images/routeur1.jpeg)
+
+For obvious security reasons, when you have finished updating and installing Openshift Origin,
+I advise you to change the operating mode of your router. To do this, you just need to use the operating
+mode where the bridge to your wifi is cut.
 
 ### Installing the OS on the cards
 You must then connect a screen, a keyboard, a mouse and the installation usb key to the first card.
@@ -363,9 +372,9 @@ You can move on to the next card, while the installer completes that card.
 
 ### End of assembly and SSH access to servers
 Once the 4 cards with their OS installed, you can then connect your computer to the local network of your cluster
-and access the web interface that will allow you to update your OS and perform all the operations you
+and access the cockpit web interface that will allow you to update your OS and perform all the operations you
 will need and this even with the command line. You can therefore access your 4 cards from the same computer
-and therefore: we put the screen away, the calvier and the smile!
+and therefore: we put the screen away, the calvier and the mouse!
 
 You must then locate the IP address of each of your cards and connect to the Centos server interface of
 each card.
@@ -378,6 +387,7 @@ The address is like this: https://XXX.XXX.X.XX:9090
 ![Cockpit](images/Centos-cockpit.png)
 
 ## Clone this repo
+If you haven't already done so, you can clone this repository to copy / paste the command lines.
 
 	git clone https://github.com/AntoineMeheut/Rokc-Mk3.git Rokc-Mk3
 	cd Rokc-Mk3
@@ -412,20 +422,8 @@ This tutorial is independent and is part of a project that will assemble several
 | node3.openshift.hal9000.com | 192.168.1.19 | Intel m3 | 4 | 8Gb | 64Gb | 500Gb | Centos-7 | Node 3 |
 
 ### Preparing all Nodes
-#### Download and flash Centos-7 on a USB key
-Download Centos 7 [CentOS-7-x86_64-Minimal-2003.iso](http://isoredirect.centos.org/centos/7/isos/x86_64/)
-
-Flash a USB key, plug your LattePanda and add : keyboard, mouse, screen and a SD card on the LattePanda.
-
 #### Why a SD card?
 There is a small bug in the LattePanda bios which for the moment and to my knowledge has not yet been fixed. Once you have installed Centos on the card, it will permanently display a message indicating that Centos cannot restart the hardware slot of the SD card. The way to get rid of this message is to insert an SD card into the slot.
-
-#### Install Centos on LattePanda
-Connect everything and start your LattePanda by pressing F7, this allows you to have the menu of choice of the support on which you want to start.
-
-Choose the USB key and start the installation.
-
-Warning: your nodes must be connected to the network switch and to the router, otherwise the configuration of the Ethernet protocol will not be carried out by the Centos installation program and this is not necessarily something that you want to do by hand after installation, we already have a lot to do.
 
 #### Installing cockpit admin tool on CentOS 7
 Cockpit is very practical when you have to access a lot of servers and especially not to rack your brains to operate a Mackbook keyboard on a Centos server. Cockpit handles this for you and allows you to copy / paste your orders.
@@ -569,7 +567,7 @@ poweroff
 **Once here, repeat the section preparing all nodes for node1, node2 and node3.**
 
 ### Connect to your nodes cockpit interfaces
-You should connect on root on all ur nodes for the main part of this tutoriel.
+You should connect on root on all ur nodes.
 
 * master [https://192.168.1.16:9090](https://192.168.1.16:9090)
 * node1 [https://192.168.1.17:9090](https://192.168.1.17:9090)
@@ -578,7 +576,7 @@ You should connect on root on all ur nodes for the main part of this tutoriel.
 
 ### Deploying and starting Openshift Origin 3.11 from master node
 #### Preparation on master only
-This declaration of targets for the sharing of the RSA key and the sending of keys which follow simply make it possible not to have to enter the login and password of each node in Ansible executes the installation scripts of Openshift Origin.
+This declaration of targets for the sharing of the RSA key and the sending of keys which follow, simply avoids having to enter the login and password of each node when Ansible executes the installation scripts of Openshift Origin.
 
 ##### Creating an RSA key
 ```
@@ -625,7 +623,7 @@ vi /etc/ansible/hosts
 
 ```
 #
-# ansible inventory for OpenShift Origin Platform  3.11
+# Ansible inventory for OpenShift Origin Platform  3.11
 #
 
 ###########################################################################
@@ -656,7 +654,7 @@ master.hal9000.com openshift_schedulable=true containerized=false
 master.hal9000.com
 
 [nodes]
-# defined values for [openshift_node_group_name] in the file below
+# Defined values for [openshift_node_group_name] in the file below
 # [/usr/share/ansible/openshift-ansible/roles/openshift_facts/defaults/main.yml]
 master.hal9000.com openshift_node_group_name='node-config-master-infra'
 node1.hal9000.com openshift_node_group_name='node-config-compute'
@@ -670,6 +668,7 @@ node3.hal9000.com openshift_node_group_name='node-config-compute'
 # Admin user created in previous section
 ansible_ssh_user=root
 
+# Use it if the installation user is not root
 # ansible_become=true
 
 # Deployment type
@@ -677,26 +676,29 @@ openshift_deployment_type=origin
 # openshift_deployment_type=openshift-enterprise
 
 # WARNING: only disable these checks in LAB/TEST environments(Do not use in production)
+# The master node must have 16 Gb of memory and it works fine with 8 Gb
 openshift_disable_check="disk_availability,memory_availability"
 
 ###########################################################################
 ### OpenShift Registries Locations
 ###########################################################################
-# use HTPasswd for authentication
+# Use HTPasswd for authentication
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 
 ###########################################################################
 ### OpenShift Master Vars
 ###########################################################################
-# define default sub-domain for Master node
+# Define default sub-domain for Master node
 openshift_master_default_subdomain=apps.hal9000.com
 
 ###########################################################################
-# image for a cluster with a working registry-console in 3.11
+# Image for a cluster with a working registry-console in 3.11
+# Because the console which is installed by default has a bug that prevents it from starting
 ###########################################################################
 openshift_cockpit_deployer_image='docker.io/timbordemann/cockpit-kubernetes:latest'
 
-# allow unencrypted connection within cluster
+# Allow unencrypted connection within cluster
+# Be careful, it's just to use a Cloud not connected to the internet, for a production target, you have to do it differently
 openshift_docker_insecure_registries=192.168.1.16/16
 ```
 
@@ -862,7 +864,7 @@ touch /etc/origin/master/htpasswd
 htpasswd -b /etc/origin/master/htpasswd admin redhat
 ```
 
-You have created a user, admin, with the password, redhat.
+You can create, for example, a user like this one, admin, with the password, redhat.
 
 ##### Restart OpenShift before going forward
 ```
