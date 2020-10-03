@@ -20,7 +20,7 @@
   <h3 align="center">Deploying OpenShift Origin 3.11 on bare metal cluster</h3>
 
   <p align="center">
-    Rokc Mark 3 is the realization on a bar metal target of the Rokc-Mk2 project. The development on virtual machines of the OpenShift Origin installation allowed me to confirm the purchase of the target cards.
+    Rokc Mark 3 is the realization on a bar metal target of the Rokc-Mk2 project. The functional check on virtual machines of the OpenShift Origin installation allowed me to confirm the purchase of the target cards.
     <br />
     <br />
     <a href="https://github.com/AntoineMeheut/Rock-Mk3/issues">Report Bug</a>
