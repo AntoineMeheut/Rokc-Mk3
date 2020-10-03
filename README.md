@@ -971,7 +971,7 @@ curl 172.30.6.251:8080
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [Project](https://github.com/AntoineMeheut/Rokc/projects) for a list of proposed features (and known issues).
+See the [Project](https://github.com/AntoineMeheut/Rokc-Mk3/projects) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 ## Contributing
