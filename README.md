@@ -389,8 +389,10 @@ The address is like this: https://XXX.XXX.X.XX:9090
 ## Clone this repo
 If you haven't already done so, you can clone this repository to copy / paste the command lines.
 
-	git clone https://github.com/AntoineMeheut/Rokc-Mk3.git Rokc-Mk3
-	cd Rokc-Mk3
+```sh
+git clone https://github.com/AntoineMeheut/Rokc-Mk3.git Rokc-Mk3
+cd Rokc-Mk3
+```
 
 ## Install your personal PaaS
 This tutorial is designed to share with you my experience of installing PaaS on equipment that you can have at home, without transforming your living room into a server room.
@@ -433,26 +435,26 @@ Of course you have to think about deactivating it, for security, once you have f
 So this experiment is planned to make demonstrations on a network not connected to the Internet, which in fact secures the installation and avoids carrying out all the security part of the installation.
 
 ##### Install Cockpit
-```
+```sh
 yum install -y cockpit
 ```
 ##### Install additional Cockpit packages
-```
+```sh
 yum install -y cockpit-networkmanager cockpit-dashboard cockpit-storaged cockpit-packagekit
 ```
 ##### Enable Cockpit
-```
+```sh
 systemctl enable --now cockpit.socket
 ```
 ##### Add cockpit to firewall
-```
+```sh
 firewall-cmd --permanent --add-service=cockpit
 firewall-cmd --reload
 ```
 
 Before connecting with the cockpit to the node, you must locate the IP address which has been assigned to it with its current configuration in DHCP. We will use this IP to connect, modify the IP configuration file to have a static one, which will facilitate access to each node.
 
-```
+```sh
 ip addr
 ```
 
@@ -462,26 +464,26 @@ From now on you can use this IP address to connect with the cockpit or continue 
 ##### Set the hostname for each corresponding node
 Master
 
-```
+```sh
 hostnamectl set-hostname master.hal9000.com
 ```
 Node1
 
-```
+```sh
 hostnamectl set-hostname node1.hal9000.com
 ```
 Node2
 
-```
+```sh
 hostnamectl set-hostname node2.hal9000.com
 ```
 Node3
 
-```
+```sh
 hostnamectl set-hostname node3.hal9000.com
 ```
 ##### Configure static ip
-```
+```sh
 vi /etc/sysconfig/network-scripts/ifcfg-enp2s0
 ```
 
@@ -491,7 +493,7 @@ Realy take care of the GATEWAY cause it allow you to access to internet on my ne
 
 Take care to keep the UUID of the file you are modifying, you can delete all lines except this one.
 
-```
+```sh
 TYPE=Ethernet
 PROXY_METHODE="none"
 BROWSER_ONLY=no
@@ -518,11 +520,11 @@ UUID=<quit the line in your file>
 ##### Configure names resolution
 Configure /etc/hosts file for name resolution as following.
 
-```
+```sh
 vi /etc/hosts
 ```
 
-```
+```sh
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 192.168.1.16   master.hal9000.com  master
 192.168.1.17   node1.hal9000.com  node1
@@ -537,21 +539,21 @@ On all Nodes, install OpenShift Origin 3.11 repository, Ansible and Docker.
 
 For Ansible, version 2.6, 2.7, 2.8, 2.9 are provided from CentOS Repository, but Openshift-Ansible is not supported on 2.8 or later, so install Ansible 2.7
 
-```
+```sh
 yum -y install centos-release-openshift-origin311 centos-release-ansible-27
 yum -y install ansible openshift-ansible docker git pyOpenSSL
 systemctl enable --now docker
 ```
 
 ##### Add docker to firewall
-```
+```sh
 firewall-cmd --permanent --zone=trusted --change-interface=docker0
 firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
 firewall-cmd --reload
 ```
 
 ##### Now you can reboot your node
-```
+```sh
 reboot
 ```
 
@@ -560,7 +562,7 @@ LattePanda cards are powerful and heat up, no more than normal, but being able t
 
 Just use this command and it will be easier.
 
-```
+```sh
 poweroff
 ```
 
@@ -579,17 +581,17 @@ You should connect on root on all ur nodes.
 This declaration of targets for the sharing of the RSA key and the sending of keys which follow, simply avoids having to enter the login and password of each node when Ansible executes the installation scripts of Openshift Origin.
 
 ##### Creating an RSA key
-```
+```sh
 ssh-keygen -q -N ""
 ```
 
 ##### Declare the target nodes for the key
 
-```
+```sh
 vi ~/.ssh/config
 ```
 
-```
+```sh
 Host master
     Hostname master.hal9000.com
     User root
@@ -605,11 +607,11 @@ Host node3
 ```
 
 ##### Send the public-key to all the nodes
-```
+```sh
 chmod 600 ~/.ssh/config
 ```
 
-```
+```sh
 ssh-copy-id master
 ssh-copy-id node1
 ssh-copy-id node2
@@ -617,11 +619,11 @@ ssh-copy-id node3
 ```
 
 #### Preparing the hosts file for Ansible
-```
+```sh
 vi /etc/ansible/hosts
 ```
 
-```
+```sh
 #
 # Ansible inventory for OpenShift Origin Platform  3.11
 #
@@ -703,18 +705,18 @@ openshift_docker_insecure_registries=192.168.1.16/16
 ```
 
 #### Run prerequisites playbook
-```
+```sh
 ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
 ```
 
 #### Run deploy cluster playbook
-```
+```sh
 ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml
 ```
 
 You have to get something like this.
 
-```
+```sh
 INSTALLER STATUS ****************************************************************************************************************************************************************************************
 Initialization               : Complete (0:00:33)
 Health Check                 : Complete (0:02:18)
@@ -735,12 +737,12 @@ If after the execution you do not have an error message and you get a complete o
 
 ### Useful commands to verify that it works
 #### See the state of your nodes
-```
+```sh
 oc get nodes
 ```
 You have to get something like this.
 
-```
+```sh
 NAME                 STATUS    ROLES          AGE       VERSION
 master.hal9000.com   Ready     infra,master   20m       v1.11.0+d4cacc0
 node1.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
@@ -749,12 +751,12 @@ node3.hal9000.com    Ready     compute        16m       v1.11.0+d4cacc0
 ```
 
 #### View status with labels
-```
+```sh
 oc get nodes --show-labels=true
 ```
 You have to get something like this.
 
-```
+```sh
 NAME                 STATUS    ROLES          AGE       VERSION           LABELS
 master.hal9000.com   Ready     infra,master   20m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.hal9000.com,node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true
 node1.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.hal9000.com,node-role.kubernetes.io/compute=true
@@ -763,24 +765,24 @@ node3.hal9000.com    Ready     compute        17m       v1.11.0+d4cacc0   beta.k
 ```
 
 #### See the state of your pods
-```
+```sh
 oc get pods
 ```
 You have to get something like this.
 
-```
+```sh
 NAME                       READY     STATUS    RESTARTS   AGE
 docker-registry-1-b528c    1/1       Running   0          43m
 registry-console-1-frrb9   1/1       Running   0          43m
 router-1-wz4bg             1/1       Running   0          43m
 ```
 
-```
+```sh
 oc describe pod registry-console-1-frrb9
 ```
 You have to get something like this.
 
-```
+```sh
 Name:               registry-console-1-frrb9
 Namespace:          default
 Priority:           0
@@ -846,20 +848,20 @@ Events:
 The adresse of your OKD console is here : OPENSHIFT_OAUTH_PROVIDER_URL:  https://master.hal9000.com:8443
 
 Because it's not possible to access to this address with the IP, you should open the hosts file of the computer you want to use to access to the OKD console and add the master DNS ident to the file.
-```
+```sh
 192.168.1.16   master.hal9000.com  master
 ```
 
 #### Create User Accounts for OKD console
 You can use the httpd-tools package to obtain the htpasswd binary that can generate these accounts.
 
-```
+```sh
 yum -y install httpd-tools
 ```
 
 ##### Create a user account
 
-```
+```sh
 touch /etc/origin/master/htpasswd
 htpasswd -b /etc/origin/master/htpasswd admin redhat
 ```
@@ -867,14 +869,14 @@ htpasswd -b /etc/origin/master/htpasswd admin redhat
 You can create, for example, a user like this one, admin, with the password, redhat.
 
 ##### Restart OpenShift before going forward
-```
+```sh
 master-restart api
 master-restart controllers
 ```
 
 Give this user account cluster-admin privileges, which allows it to do everything.
 
-```
+```sh
 oc adm policy add-cluster-role-to-user cluster-admin admin
 ```
 
@@ -887,24 +889,24 @@ oc adm policy add-cluster-role-to-user cluster-admin admin
 ## Application deployment
 ### Deploy a test application with openshift CLI
 #### Create a new project
-```
+```sh
 oc login -u admin
 oc new-project test-project
 ```
 
 #### Load an application on your project
-```
+```sh
 oc new-app centos/ruby-25-centos7~https://github.com/sclorg/ruby-ex.git
 oc expose svc/ruby-ex
 ```
 
 #### Check your application status
-```
+```sh
 oc status
 ```
 You have to get something like this.
 
-```
+```sh
 In project test-project on server https://master.hal9000.com:8443
 
 svc/ruby-ex - 172.30.6.251:8080
@@ -918,23 +920,23 @@ svc/ruby-ex - 172.30.6.251:8080
 ```
 
 #### Check your application pod
-```
+```sh
 oc get pods
 ```
 You have to get something like this.
 
-```
+```sh
 NAME              READY     STATUS    RESTARTS   AGE
 ruby-ex-1-build   1/1       Running   0          1m
 ```
 
 #### Check you application service
-```
+```sh
 oc describe service ruby-ex
 ```
 You have to get something like this.
 
-```
+```sh
 In project test-project on server https://master.hal9000.com:8443
 
 svc/ruby-ex - 172.30.6.251:8080
@@ -964,7 +966,7 @@ Events:            <none>
 ```
 
 #### Try localy your application
-```
+```sh
 curl 172.30.6.251:8080
 ```
 
